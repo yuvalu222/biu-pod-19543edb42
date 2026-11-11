@@ -4,161 +4,255 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0E1424">
+<meta name="theme-color" content="#F6F4EF">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="פודקאסטים">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
 <title>הפודקאסטים שלי</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap">
 <style>
-/* Mobile-first audio app: header + search, content views, sticky mini-player above a bottom tab bar, full-screen player sheet. */
-:root{--bg:#0E1424;--bg-2:#141C30;--card:#1A2440;--card-2:#222E50;--fg:#F1F5FF;--muted:#A3AEC8;--line:#2A3658;--accent:#3DD6A3;--accent-fg:#06281C;--warn:#FFC266;
-  --font:"Heebo","Segoe UI",Arial,sans-serif;color-scheme:dark}
+/* Light audio app, warm paper background. Header greeting + search; home = continue card, quiz prep, course "albums" rail, recent lessons;
+   course page = colored hero with progress + numbered tracklist; floating mini-player above a 3-tab bar; full-screen now-playing sheet. */
+:root{
+  --bg:#F6F4EF; --surface:#FFFFFF; --surface-2:#EFECE4; --fg:#1B1B22; --muted:#6B6B78; --faint:#9A9AA6; --line:#E6E2D8;
+  --accent:#2F5BFF; --accent-2:#E8EDFF; --good:#11875D; --good-2:#E1F4EB; --warn:#B4530A; --warn-2:#FDEFD9;
+  --shadow:0 1px 2px rgba(27,27,34,.05),0 6px 20px rgba(27,27,34,.06); --shadow-lg:0 16px 44px rgba(27,27,34,.18);
+  --font:"Rubik","Heebo","Segoe UI",system-ui,sans-serif; color-scheme:light}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
 html,body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 var(--font)}
-body{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+body{padding-bottom:calc(158px + env(safe-area-inset-bottom))}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
-.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
-header{position:sticky;top:0;z-index:5;background:linear-gradient(var(--bg),rgba(14,20,36,.96));padding-top:env(safe-area-inset-top);backdrop-filter:blur(8px)}
-header .wrap{padding-block:12px 10px;display:flex;flex-direction:column;gap:10px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-h1{margin:0;font-size:1.45rem;font-weight:800;letter-spacing:-.01em}
-.off{font-size:.8rem;color:var(--warn);display:none}
-body.offline .off{display:inline}
+button{transition:transform .14s ease,background-color .2s ease,color .2s ease,box-shadow .2s ease}
+button:active{transform:scale(.96)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:10px}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+header{position:sticky;top:0;z-index:5;background:rgba(246,244,239,.9);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);padding-top:env(safe-area-inset-top)}
+header .wrap{padding-block:14px 12px;display:flex;flex-direction:column;gap:12px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.hi{font-size:.86rem;color:var(--muted);font-weight:500}
+h1{margin:0;font-size:1.65rem;line-height:1.15;font-weight:800;letter-spacing:-.02em}
+.off{font-size:.76rem;font-weight:600;color:var(--warn);background:var(--warn-2);padding:5px 10px;border-radius:999px;display:none;white-space:nowrap}
+body.offline .off{display:inline-block}
 .search{position:relative}
-.search input{width:100%;min-height:46px;border-radius:999px;border:0;background:var(--card);color:var(--fg);font:inherit;padding:0 44px 0 16px}
-.search input::placeholder{color:var(--muted)}
-.search svg{position:absolute;inset-inline-start:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--muted);pointer-events:none}
-main{padding-block:8px 24px}
-h2{font-size:1.15rem;font-weight:700;margin:22px 0 10px}
+.search input{width:100%;min-height:48px;border-radius:14px;border:1.5px solid transparent;background:var(--surface);color:var(--fg);font:inherit;padding:0 46px 0 40px;box-shadow:var(--shadow);-webkit-appearance:none;appearance:none}
+.search input:focus{outline:none;border-color:var(--accent)}
+.search input::placeholder{color:var(--faint)}
+.search input::-webkit-search-cancel-button{display:none}
+.search .ico{position:absolute;inset-inline-start:15px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--faint);pointer-events:none}
+.search .clr{position:absolute;inset-inline-end:4px;top:50%;transform:translateY(-50%);width:40px;height:40px;display:grid;place-items:center;color:var(--faint)}
+.search .clr svg{width:18px;height:18px}
+main{padding-block:4px 24px}
+h2{font-size:1.18rem;font-weight:700;letter-spacing:-.01em;margin:28px 0 12px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+h2 .lnk{font-size:.86rem;font-weight:600;color:var(--accent);min-height:44px;display:inline-flex;align-items:center}
 .muted{color:var(--muted)}
-.row-scroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
+.card{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);padding:2px 14px}
+/* covers */
+.cover{width:100%;aspect-ratio:1;border-radius:18px;position:relative;overflow:hidden;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;box-shadow:0 8px 22px rgba(27,27,34,.14);isolation:isolate}
+.cover svg.pat{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.cover .nm{font-weight:700;font-size:1.02rem;line-height:1.18;text-wrap:balance;text-shadow:0 1px 8px rgba(0,0,0,.12)}
+.cover .lb{position:absolute;top:10px;inset-inline-start:10px;font-weight:600;font-size:.7rem;background:rgba(255,255,255,.28);padding:3px 9px;border-radius:999px}
+.cover.sm{border-radius:12px;padding:0;box-shadow:none}
+.cover.sm .nm,.cover.sm .lb{display:none}
+.row-scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 18px 12px;margin-inline:-18px;scrollbar-width:none;scroll-padding-inline:18px}
 .row-scroll::-webkit-scrollbar{display:none}
-.tile{flex:none;width:150px;scroll-snap-align:start;text-align:start}
-.cover{width:100%;aspect-ratio:1;border-radius:10px;display:flex;align-items:flex-end;padding:10px;font-weight:800;font-size:1rem;line-height:1.2;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.35)}
-.cover small{position:absolute;top:8px;inset-inline-start:10px;font-weight:600;font-size:.72rem;opacity:.85}
-.tile b{display:block;font-size:.9rem;margin-top:6px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.tile span{font-size:.78rem;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.tile{flex:none;width:146px;scroll-snap-align:start;text-align:start;display:block}
+.tile b{display:block;font-weight:600;font-size:.9rem;line-height:1.3;margin-top:9px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tile .sub{font-size:.78rem;color:var(--muted);margin-top:1px}
+.mbar{height:4px;border-radius:2px;background:var(--line);margin-top:7px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--good);border-radius:inherit}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}
+@media (min-width:560px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .grid .tile{width:auto}
-.ep{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-.ep .pl{flex:none;width:44px;height:44px;border-radius:50%;background:var(--card-2);display:grid;place-items:center}
-.ep.on .pl{background:var(--accent);color:var(--accent-fg)}
-.ep svg{width:20px;height:20px}
-.ep .tx{flex:1;min-width:0;text-align:start}
-.ep .tx b{display:block;font-weight:600;font-size:.95rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.ep.on .tx b{color:var(--accent)}
-.ep .meta{font-size:.8rem;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.tag{font-size:.7rem;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--card-2);color:var(--muted)}
-.tag.quiz{background:rgba(255,194,102,.15);color:var(--warn)}
-.prog{height:3px;border-radius:2px;background:var(--line);margin-top:6px;overflow:hidden}
-.prog i{display:block;height:100%;background:var(--accent)}
-.dl{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--muted);position:relative}
-.dl.done{color:var(--accent)}
-.dl .ring{position:absolute;inset:6px;border-radius:50%;background:conic-gradient(var(--accent) var(--p,0%),var(--line) 0)}
-.dl .ring::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--bg)}
-.dl .ring+svg{position:relative}
-.back{display:flex;align-items:center;gap:8px;color:var(--muted);min-height:44px}
-.chead{display:flex;gap:16px;align-items:flex-end;margin:6px 0 10px}
-.chead .cover{width:120px;flex:none}
-.chead h2{margin:0 0 4px}
-.chead .actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-.pill{min-height:40px;padding:0 16px;border-radius:999px;background:var(--card-2);font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;gap:6px}
-.pill.primary{background:var(--accent);color:var(--accent-fg)}
+/* continue card */
+.resume{display:flex;align-items:center;gap:14px;background:var(--surface);border-radius:20px;box-shadow:var(--shadow);padding:12px;margin-top:14px;width:100%;text-align:start}
+.resume .cover{width:72px;flex:none;border-radius:14px}
+.resume .tx{flex:1;min-width:0}
+.resume .k{font-size:.74rem;font-weight:700;color:var(--accent);letter-spacing:.01em}
+.resume b{display:block;font-weight:600;font-size:.98rem;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.resume .s{font-size:.8rem;color:var(--muted)}
+.resume .go{flex:none;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;box-shadow:0 8px 20px rgba(47,91,255,.35)}
+.resume .go svg{width:24px;height:24px}
+/* episode rows */
+.ep{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.card .ep:last-child{border-bottom:0}
+.ep .tx{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:start;padding:2px 0}
+.ep .num{flex:none;width:28px;display:grid;place-items:center;font-weight:600;font-size:.92rem;color:var(--faint);font-variant-numeric:tabular-nums}
+.ep .th{flex:none;width:52px;height:52px;position:relative}
+.ep .th .cover{width:52px;height:52px}
+.ep .ov{position:absolute;inset:0;border-radius:12px;background:rgba(27,27,34,.38);display:grid;place-items:center}
+.ep .ov .eq i{background:#fff}
+.ep svg{width:22px;height:22px}
+.ep .t{flex:1;min-width:0;display:block}
+.ep .t b{display:block;font-weight:600;font-size:.95rem;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ep.on .t b{color:var(--accent)}
+.ep .crs{display:block;font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.ep .meta{font-size:.78rem;color:var(--faint);display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:3px}
+.tag{font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.tag.quiz{background:var(--warn-2);color:var(--warn)}
+.tag.summary{background:var(--accent-2);color:var(--accent)}
+.tag.ok{background:var(--good-2);color:var(--good)}
+.prog{display:block;height:4px;border-radius:2px;background:var(--line);margin-top:8px;overflow:hidden;max-width:240px}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:inherit}
+.eq{display:inline-flex;gap:2px;align-items:flex-end;height:12px;margin-inline-end:4px;vertical-align:-1px}
+.eq i{width:3px;background:var(--accent);border-radius:1px;animation:eq 1s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:-.3s}.eq i:nth-child(3){animation-delay:-.6s}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+.paused .eq i{animation-play-state:paused}
+.dl{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--faint);position:relative}
+.dl.done{color:var(--good)}
+.dl .ring{position:absolute;inset:9px;border-radius:50%;background:conic-gradient(var(--accent) var(--p,0%),var(--line) 0)}
+.dl .ring::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--surface)}
+.dl .pct{position:relative;font-size:.6rem;font-weight:700;color:var(--accent)}
+/* course hero */
+.back{display:inline-flex;align-items:center;gap:4px;color:var(--muted);min-height:44px;font-weight:500;margin-top:4px}
+.back svg{width:20px;height:20px}
+.hero{border-radius:26px;padding:20px;color:#fff;position:relative;overflow:hidden;margin:6px 0 16px;box-shadow:0 14px 36px rgba(27,27,34,.16);isolation:isolate}
+.hero svg.pat{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(160deg,rgba(0,0,0,.18),rgba(0,0,0,.04) 55%,rgba(0,0,0,.22))}
+.hero .k{font-size:.78rem;font-weight:600;opacity:.9}
+.hero h2{margin:4px 0 2px;font-size:1.55rem;line-height:1.2;color:#fff;display:block;font-weight:800;text-wrap:balance}
+.hero .st{font-size:.88rem;opacity:.95}
+.hero .hb{height:6px;border-radius:3px;background:rgba(255,255,255,.32);overflow:hidden;margin-top:12px}
+.hero .hb i{display:block;height:100%;background:#fff;border-radius:inherit}
+.actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.pill{min-height:46px;padding:0 18px;border-radius:999px;background:rgba(255,255,255,.24);color:#fff;font-weight:600;font-size:.92rem;display:inline-flex;align-items:center;gap:8px}
+.pill.primary{background:#fff;color:var(--fg);box-shadow:0 6px 16px rgba(0,0,0,.12)}
 .pill svg{width:18px;height:18px}
-.empty{color:var(--muted);text-align:center;padding:28px 8px}
+.empty{color:var(--muted);text-align:center;padding:34px 18px;background:var(--surface);border-radius:20px;box-shadow:var(--shadow);margin:0}
+.empty b{display:block;color:var(--fg);font-size:1.05rem;margin-bottom:4px}
+.stat{display:flex;gap:10px;margin-top:14px}
+.stat div{flex:1;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px}
+.stat b{display:block;font-size:1.3rem;font-weight:800;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+/* install hint */
+.install{display:flex;gap:12px;align-items:center;background:var(--surface);border:1.5px dashed #C9D3FF;border-radius:18px;padding:12px 8px 12px 14px;margin-top:14px}
+.install .ic{flex:none;width:40px;height:40px;border-radius:12px;background:var(--accent-2);color:var(--accent);display:grid;place-items:center}
+.install .ic svg{width:22px;height:22px}
+.install p{margin:0;font-size:.86rem;line-height:1.4;flex:1}
+.install p b{display:block;font-size:.92rem}
+.install .ok{min-height:40px;padding:0 14px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:.86rem;flex:none}
+.install .x{flex:none;width:40px;height:40px;display:grid;place-items:center;color:var(--faint)}
+.install .x svg{width:18px;height:18px}
 /* mini player */
-.mini{position:fixed;inset-inline:8px;bottom:calc(64px + env(safe-area-inset-bottom));z-index:8;background:var(--card-2);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.45);display:none;overflow:hidden}
-body.has-cur .mini{display:block}
-.mini .in{display:flex;align-items:center;gap:10px;padding:8px 10px}
-.mini .cv{width:40px;height:40px;border-radius:6px;flex:none}
+.mini{position:fixed;inset-inline:10px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:8;background:var(--surface);border-radius:18px;box-shadow:var(--shadow-lg);display:none;overflow:hidden;max-width:700px;margin-inline:auto}
+body.has-cur .mini{display:block;animation:up .28s ease}
+@keyframes up{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.mini .in{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 10px}
+.mini .open{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.mini .cv{width:46px;height:46px;flex:none}
+.mini .cv .cover{width:46px;height:46px}
 .mini .tx{flex:1;min-width:0;text-align:start}
-.mini .tx b{display:block;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mini .tx span{font-size:.75rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-.mini .pp{width:44px;height:44px;display:grid;place-items:center}
-.mini .pp svg{width:26px;height:26px}
-.mini .bar{height:2px;background:var(--line)}
-.mini .bar i{display:block;height:100%;background:var(--fg);width:0}
+.mini .tx b{display:block;font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .tx span{font-size:.76rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.mini .sk{width:44px;height:44px;display:grid;place-items:center;color:var(--muted);flex:none}
+.mini .sk svg{width:24px;height:24px}
+.mini .pp{width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;flex:none}
+.mini .pp svg{width:22px;height:22px}
+.mini .bar{height:3px;background:var(--surface-2)}
+.mini .bar i{display:block;height:100%;background:var(--accent);width:0}
 /* bottom nav */
-nav.tabs{position:fixed;inset:auto 0 0 0;z-index:7;background:rgba(14,20,36,.98);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs{position:fixed;inset:auto 0 0 0;z-index:7;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 nav.tabs .wrap{display:flex;justify-content:space-around}
-nav.tabs button{flex:1;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.75rem;color:var(--muted)}
-nav.tabs button[aria-current=page]{color:var(--fg)}
-nav.tabs svg{width:24px;height:24px}
+nav.tabs button{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.74rem;font-weight:500;color:var(--faint);position:relative}
+nav.tabs button[aria-current=page]{color:var(--fg);font-weight:600}
+nav.tabs button[aria-current=page] .dot{background:var(--accent);color:#fff}
+nav.tabs .dot{width:52px;height:30px;border-radius:999px;display:grid;place-items:center}
+nav.tabs svg{width:22px;height:22px}
+nav.tabs .badge{position:absolute;top:6px;inset-inline-start:calc(50% + 10px);min-width:18px;height:18px;border-radius:9px;background:var(--good);color:#fff;font-size:.66rem;font-weight:700;display:grid;place-items:center;padding:0 5px}
 /* full player */
-.full{position:fixed;inset:0;z-index:20;background:linear-gradient(var(--c1,#1A2440),var(--bg) 70%);display:none;flex-direction:column;padding:calc(12px + env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
-body.full-open .full{display:flex}
+.full{position:fixed;inset:0;z-index:20;background:linear-gradient(180deg,var(--c2,#E8EDFF) 0%,rgba(246,244,239,0) 62%),var(--bg);display:none;flex-direction:column;padding:calc(10px + env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left))}
+body.full-open .full{display:flex;animation:sheet .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes sheet{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 body.full-open{overflow:hidden}
-.full .hd{display:flex;justify-content:space-between;align-items:center;min-height:44px}
-.full .hd button{width:44px;height:44px;display:grid;place-items:center}
-.full .hd svg{width:28px;height:28px}
-.full .art{flex:1;display:flex;align-items:center;justify-content:center;padding:16px 0}
-.full .art .cover{width:min(78vw,340px);font-size:1.4rem;padding:18px}
-.full h3{margin:0;font-size:1.25rem;font-weight:700;text-align:start}
-.full .crs{color:var(--muted);text-align:start;margin-top:2px}
-.seek{margin-top:16px}
-.seek input{width:100%;accent-color:var(--fg);height:28px}
-.times{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.ctl{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
-.ctl button{width:56px;height:56px;display:grid;place-items:center}
-.ctl .big{width:72px;height:72px;border-radius:50%;background:var(--fg);color:var(--bg)}
+.full .hd{display:flex;justify-content:space-between;align-items:center;min-height:48px;max-width:520px;width:100%;margin:0 auto}
+.full .hd button{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.75)}
+.full .hd svg{width:24px;height:24px}
+.full .hd span{font-size:.82rem;font-weight:600;color:var(--muted)}
+.full .body{flex:1;display:flex;flex-direction:column;max-width:520px;width:100%;margin:0 auto;min-height:0}
+.full .art{flex:1;display:flex;align-items:center;justify-content:center;padding:16px 0;min-height:0}
+.full .art .cover{width:min(78vw,340px,40vh);border-radius:28px;padding:22px;box-shadow:0 26px 60px rgba(27,27,34,.24);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.full .art .cover .nm{font-size:1.45rem}
+body:not(.playing) .full .art .cover{transform:scale(.92)}
+.full h3{margin:0;font-size:1.28rem;line-height:1.3;font-weight:700;text-align:start}
+.full .crs{color:var(--muted);text-align:start;margin-top:2px;font-weight:500}
+.seek{margin-top:18px;position:relative;direction:ltr}
+.seek input{width:100%;height:28px;margin:0;-webkit-appearance:none;appearance:none;background:transparent}
+.seek input::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--accent) var(--sv,0%),#D9D5CB var(--sv,0%))}
+.seek input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);margin-top:-6px;box-shadow:0 2px 6px rgba(47,91,255,.4)}
+.seek input::-moz-range-track{height:6px;border-radius:3px;background:#D9D5CB}
+.seek input::-moz-range-progress{height:6px;border-radius:3px;background:var(--accent)}
+.seek input::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:var(--accent)}
+.times{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:2px}
+.ctl{display:flex;align-items:center;justify-content:space-between;margin-top:10px;direction:ltr}
+.ctl button{width:56px;height:56px;display:grid;place-items:center;border-radius:50%;color:var(--fg)}
+.ctl .big{width:78px;height:78px;background:var(--accent);color:#fff;box-shadow:0 14px 30px rgba(47,91,255,.38)}
 .ctl .big svg{width:34px;height:34px}
 .ctl svg{width:30px;height:30px}
-.ctl .sp{font-weight:700;font-size:.95rem;width:56px}
-.extra{display:flex;justify-content:space-between;margin-top:18px;align-items:center}
-.err{color:#FF8A8A;font-size:.85rem;margin-top:8px;text-align:center}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.ctl .sp{font-weight:700;font-size:.95rem;background:var(--surface);box-shadow:var(--shadow);width:52px;height:52px}
+.err{color:#B42318;font-size:.88rem;margin-top:12px;text-align:center;background:#FDECEA;border-radius:12px;padding:9px}
+#toast{position:fixed;inset-inline:16px;bottom:calc(158px + env(safe-area-inset-bottom));background:var(--fg);color:#fff;padding:12px 16px;border-radius:14px;z-index:30;font-weight:500;text-align:center;box-shadow:var(--shadow-lg);max-width:560px;margin-inline:auto}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <header><div class="wrap">
-  <div class="top"><h1 id="ttl">הפודקאסטים שלי</h1><span class="off">מצב לא מקוון · רק פרקים שהורדו</span></div>
-  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="מה בא לך לשמוע? קורס, נושא, מושג" aria-label="חיפוש פרקים" autocomplete="off"></div>
+  <div class="top"><div><div class="hi" id="hi"></div><h1>הפודקאסטים שלי</h1></div><span class="off">אין אינטרנט · מתנגנים רק פרקים שהורדו</span></div>
+  <div class="search"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="חיפוש: קורס, נושא, מושג" aria-label="חיפוש פרקים" autocomplete="off" enterkeyhint="search">
+    <button type="button" class="clr" id="clr" aria-label="ניקוי החיפוש" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
 </div></header>
 <main class="wrap" id="main"></main>
 
 <div class="mini" id="mini" role="region" aria-label="נגן">
-  <div class="in"><button type="button" id="openFull" style="display:flex;align-items:center;gap:10px;flex:1;min-width:0" aria-label="פתיחת הנגן המלא"><div class="cv" id="miniCv"></div><div class="tx"><b id="miniT"></b><span id="miniC"></span></div></button>
+  <div class="in"><button type="button" class="open" id="openFull" aria-label="פתיחת הנגן המלא"><div class="cv" id="miniCv"></div><div class="tx"><b id="miniT"></b><span id="miniC"></span></div></button>
+  <button type="button" class="sk" id="miniB15" aria-label="15 שניות אחורה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg></button>
   <button type="button" class="pp" id="miniPP" aria-label="ניגון"></button></div>
   <div class="bar"><i id="miniBar"></i></div>
 </div>
 
 <nav class="tabs" aria-label="ניווט"><div class="wrap">
-  <button type="button" data-v="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21H3z"/></svg>בית</button>
-  <button type="button" data-v="courses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>קורסים</button>
-  <button type="button" data-v="downloads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>הורדות</button>
+  <button type="button" data-v="home" aria-current="page"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5v-6h-6v6H4z"/></svg></span>בית</button>
+  <button type="button" data-v="courses"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14z"/></svg></span>קורסים</button>
+  <button type="button" data-v="downloads"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14"/></svg></span>הורדות<span class="badge" id="dlBadge" hidden></span></button>
 </div></nav>
 
 <div class="full" id="full" role="dialog" aria-modal="true" aria-label="נגן מלא">
-  <div class="hd"><button type="button" id="closeFull" aria-label="סגירה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button><span class="muted" style="font-size:.85rem" id="fullKind"></span><button type="button" id="fullDl" aria-label="הורדה"></button></div>
-  <div class="art"><div class="cover" id="fullCv"></div></div>
+  <div class="hd"><button type="button" id="closeFull" aria-label="סגירה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button><span id="fullKind"></span><button type="button" id="fullDl" aria-label="הורדה"></button></div>
+  <div class="body">
+  <div class="art"><div id="fullCv"></div></div>
   <h3 id="fullT"></h3><div class="crs" id="fullC"></div>
   <div class="seek"><input type="range" id="seek" min="0" max="1000" value="0" aria-label="מיקום בפרק"><div class="times"><span id="tCur">0:00</span><span id="tDur">0:00</span></div></div>
   <div class="ctl">
-    <button type="button" class="sp" id="speed" aria-label="מהירות">1x</button>
-    <button type="button" id="b15" aria-label="15 שניות אחורה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/><text x="12" y="15.5" font-size="7" text-anchor="middle" fill="currentColor" stroke="none" font-family="Heebo">15</text></svg></button>
+    <button type="button" class="sp" id="speed" aria-label="מהירות ניגון">1x</button>
+    <button type="button" id="b15" aria-label="15 שניות אחורה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/><text x="12" y="15.5" font-size="7" text-anchor="middle" fill="currentColor" stroke="none" font-family="Rubik,sans-serif">15</text></svg></button>
     <button type="button" class="big" id="fullPP" aria-label="ניגון"></button>
-    <button type="button" id="f30" aria-label="30 שניות קדימה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/><text x="12" y="15.5" font-size="7" text-anchor="middle" fill="currentColor" stroke="none" font-family="Heebo">30</text></svg></button>
-    <button type="button" id="next" aria-label="הפרק הבא"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 6h2v12h-2zM5 6l10 6-10 6z" transform="matrix(-1 0 0 1 24 0)"/></svg></button>
+    <button type="button" id="f30" aria-label="30 שניות קדימה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/><text x="12" y="15.5" font-size="7" text-anchor="middle" fill="currentColor" stroke="none" font-family="Rubik,sans-serif">30</text></svg></button>
+    <button type="button" id="next" aria-label="הפרק הבא"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 6h2v12h-2zM5 6l10 6-10 6z"/></svg></button>
   </div>
   <div class="err" id="err" hidden></div>
+  </div>
 </div>
 <audio id="audio" preload="metadata" playsinline></audio>
 
 <script>
-const EP = [{"id": "876010301-quiz-ch2", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "לקראת הבוחן: פרק 2 - תאי מערכת העצבים", "kind": "quiz", "lesson": null, "date": "2026-11-24", "minutes": 18, "src": "audio/876010301-quiz-ch2.m4a", "size": 4989067, "v": 1794385375}, {"id": "876010701-01", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "איך התקופה ברחם מעצבת את המבוגר", "kind": "summary", "lesson": null, "date": null, "minutes": 16, "src": "audio/876010701-01.m4a", "size": 4945226, "v": 1794385418}, {"id": "876010101-01", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "מהתניות ועד זיכרון חבוי במבוא לפסיכולוגיה", "kind": "summary", "lesson": null, "date": null, "minutes": 18, "src": "audio/876010101-01.m4a", "size": 5533273, "v": 1794385350}, {"id": "876010501-01", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "סולמות מדידה ומדדי מרכז בסטטיסטיקה תיאורית", "kind": "summary", "lesson": null, "date": null, "minutes": 18, "src": "audio/876010501-01.m4a", "size": 5656931, "v": 1794385388}, {"id": "876010301-02", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "הולכה חשמלית ותקשורת כימית בתאי העצב", "kind": "quiz", "lesson": null, "date": "2026-11-24", "minutes": 14, "src": "audio/876010301-02.m4a", "size": 4212814, "v": 1794385360}, {"id": "873120201-01", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "מהשד הרמאי ועד הקוגיטו של דקארט", "kind": "summary", "lesson": null, "date": null, "minutes": 21, "src": "audio/873120201-01.m4a", "size": 6499647, "v": 1794385338}, {"id": "lesson-870211503-None", "course": "יהדות פוגשת את מדינת ישראל", "code": "870211503", "title": "יהדות ישראלית: מעמדם של עוברי עבירה", "kind": "lesson", "lesson": null, "date": null, "minutes": 16, "src": "audio/lesson-870211503-None.m4a", "size": 4406336, "v": 1794385456}, {"id": "lesson-873110501-1", "course": "מבוא ללוגיקה", "code": "873110501", "title": "מבוא ללוגיקה - שיעור 1: מושגי יסוד, טיעון ותקפות", "kind": "lesson", "lesson": 1, "date": "2026-10-14", "minutes": 16, "src": "audio/lesson-873110501-1.m4a", "size": 4499607, "v": 1794385468}, {"id": "lesson-873112201-1", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "יסודות מחשבת המערב - שיעור 1: הקדמה ותאליס", "kind": "lesson", "lesson": 1, "date": null, "minutes": 17, "src": "audio/lesson-873112201-1.m4a", "size": 4881199, "v": 1794385480}, {"id": "lesson-873112201-2", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "יסודות מחשבת המערב - שיעור 2: אנכסימנדרוס ואנכסימנס", "kind": "lesson", "lesson": 2, "date": null, "minutes": 16, "src": "audio/lesson-873112201-2.m4a", "size": 4544138, "v": 1794385492}, {"id": "lesson-873112201-3", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "יסודות מחשבת המערב - שיעור 3: פיתגוראס", "kind": "lesson", "lesson": 3, "date": null, "minutes": 17, "src": "audio/lesson-873112201-3.m4a", "size": 4720904, "v": 1794385503}, {"id": "lesson-873112201-4", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "יסודות מחשבת המערב - שיעור 4: הרקליטוס", "kind": "lesson", "lesson": 4, "date": null, "minutes": 16, "src": "audio/lesson-873112201-4.m4a", "size": 4604622, "v": 1794385515}, {"id": "lesson-873112201-5", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "יסודות מחשבת המערב - שיעור 5: פרמנידס וזינון", "kind": "lesson", "lesson": 5, "date": null, "minutes": 16, "src": "audio/lesson-873112201-5.m4a", "size": 4465312, "v": 1794385526}, {"id": "lesson-873120201-2", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "שיעור 2: דקארט - הטלת ספק גורפת והוכחת מציאות האני החושב", "kind": "lesson", "lesson": 2, "date": "2026-10-28", "minutes": 16, "src": "audio/lesson-873120201-2.m4a", "size": 4625512, "v": 1794385591}, {"id": "lesson-873120201-3", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "שיעור 3: דקארט - הוכחת קיום האל על סמך הוכחת קיומו של האני החושב", "kind": "lesson", "lesson": 3, "date": "2026-11-04", "minutes": 15, "src": "audio/lesson-873120201-3.m4a", "size": 4319793, "v": 1794385602}, {"id": "lesson-873178601-p1", "course": "סוגיות בפילוסופיה של התפיסה", "code": "873178601", "title": "פרטני 1: ההקדמה - שני הכובעים של תיאוריית תפיסה, מאריסטו ועד ריד", "kind": "lesson", "lesson": "פרטני 1", "date": "2026-11-04", "minutes": 16, "src": "audio/lesson-873178601-p1.m4a", "size": 12659612, "v": 1794387179}, {"id": "lesson-876010101-1", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור 1: מבוא – מהי פסיכולוגיה", "kind": "lesson", "lesson": 1, "date": null, "minutes": 17.0, "src": "audio/lesson-876010101-1.m4a", "size": 15156514, "v": 1794387525}, {"id": "lesson-876010101-2", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור 2: גישות ושיטות מחקר", "kind": "lesson", "lesson": 2, "date": null, "minutes": 16.0, "src": "audio/lesson-876010101-2.m4a", "size": 4536613, "v": 1794385688}, {"id": "lesson-876010101-3", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור 3: למידה והתניה קלאסית", "kind": "lesson", "lesson": 3, "date": null, "minutes": 16.3, "src": "audio/lesson-876010101-3.m4a", "size": 4642881, "v": 1794385700}, {"id": "lesson-876010101-t-1", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור ת-1: תרגול 1 – היכרות עם הקורס ותחומים בפסיכולוגיה", "kind": "lesson", "lesson": "ת-1", "date": "2026-10-22", "minutes": 16.6, "src": "audio/lesson-876010101-t-1.m4a", "size": 11789921, "v": 1794387097}, {"id": "lesson-876010101-t-2", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור ת-2: תרגול 2 – שיטות מחקר", "kind": "lesson", "lesson": "ת-2", "date": "2026-10-29", "minutes": 16.3, "src": "audio/lesson-876010101-t-2.m4a", "size": 8229993, "v": 1794387562}, {"id": "lesson-876010101-t-3", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור ת-3: תרגול 3 – התניה קלאסית", "kind": "lesson", "lesson": "ת-3", "date": "2026-11-05", "minutes": 16.3, "src": "audio/lesson-876010101-t-3.m4a", "size": 4718618, "v": 1794385768}, {"id": "lesson-876010301-1", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "שיעור 1: מבוא, נפש, מוח ומודעות", "kind": "lesson", "lesson": 1, "date": "2026-10-13", "minutes": 16, "src": "audio/lesson-876010301-1.m4a", "size": 8921749, "v": 1794387476}, {"id": "lesson-876010301-2", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "שיעור 2: תאי מערכת העצבים ותקשורת בתוך הנוירון", "kind": "lesson", "lesson": 2, "date": "2026-10-20", "minutes": 17, "src": "audio/lesson-876010301-2.m4a", "size": 4797807, "v": 1794385791}, {"id": "lesson-876010301-3", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "שיעור 3: פוטנציאל פעולה ותקשורת בתוך הנוירון", "kind": "lesson", "lesson": 3, "date": "2026-11-03", "minutes": 19, "src": "audio/lesson-876010301-3.m4a", "size": 5607583, "v": 1794385805}, {"id": "lesson-876010301-4", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "שיעור 4: תקשורת בין נוירונים וסינפסה", "kind": "lesson", "lesson": 4, "date": "2026-11-10", "minutes": 18, "src": "audio/lesson-876010301-4.m4a", "size": 4997420, "v": 1794385817}, {"id": "lesson-876010501-1", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 1: מושגי יסוד, סוגי משתנים וסולמות מדידה", "kind": "lesson", "lesson": 1, "date": "2026-10-12", "minutes": 17, "src": "audio/lesson-876010501-1.m4a", "size": 18113993, "v": 1794387273}, {"id": "lesson-876010501-2", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 2: ארגון נתונים, לוחות ותרשימים", "kind": "lesson", "lesson": 2, "date": "2026-10-19", "minutes": 17, "src": "audio/lesson-876010501-2.m4a", "size": 4816317, "v": 1794385838}, {"id": "lesson-876010501-3", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 3: סכימה ומדדי מרכז", "kind": "lesson", "lesson": 3, "date": "2026-10-26", "minutes": 18, "src": "audio/lesson-876010501-3.m4a", "size": 5245374, "v": 1794385850}, {"id": "lesson-876010601-1", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "תרגיל סטטיסטיקה, שיעור 1: מיון משתנים וטרנספורמציות", "kind": "lesson", "lesson": 1, "date": null, "minutes": 17, "src": "audio/lesson-876010601-1.m4a", "size": 4855055, "v": 1794385887}, {"id": "lesson-876010701-1", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "שיעור 1: מבוא והגדרת התחום", "kind": "lesson", "lesson": 1, "date": "2026-10-12", "minutes": 16, "src": "audio/lesson-876010701-1.m4a", "size": 10414936, "v": 1794386910}, {"id": "lesson-870211503-None-2", "course": "יהדות פוגשת את מדינת ישראל", "code": "870211503", "title": "היחס למיעוטים: מיעוטים בשלטון", "kind": "lesson", "lesson": null, "date": null, "minutes": 15, "src": "audio/lesson-870211503-None-2.m4a", "size": 4310031, "v": 1794385439}, {"id": "lesson-873120201-4", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "שיעור 4: דקארט - העצמים המתפשטים, בעיית גוף ונפש והפרוגרמה המכניסטית", "kind": "lesson", "lesson": 4, "date": "2026-11-11", "minutes": 16, "src": "audio/lesson-873120201-4.m4a", "size": 4452519, "v": 1794385613}, {"id": "lesson-876010501-4", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 4: טרנספורמציות ופונקציות הפסד", "kind": "lesson", "lesson": 4, "date": "2026-11-02", "minutes": 16, "src": "audio/lesson-876010501-4.m4a", "size": 4692484, "v": 1794385861}, {"id": "lesson-876010501-5", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 5: מדדי פיזור", "kind": "lesson", "lesson": 5, "date": "2026-11-09", "minutes": 17, "src": "audio/lesson-876010501-5.m4a", "size": 4844635, "v": 1794385874}, {"id": "lesson-876010601-2", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "תרגיל סטטיסטיקה, שיעור 2: ארגון נתונים", "kind": "lesson", "lesson": 2, "date": null, "minutes": 17, "src": "audio/lesson-876010601-2.m4a", "size": 4960451, "v": 1794385899}, {"id": "lesson-876010601-3", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "תרגיל סטטיסטיקה, שיעור 3: סכימה ומדדי מרכז, ו-Jamovi: Compute", "kind": "lesson", "lesson": 3, "date": null, "minutes": 17, "src": "audio/lesson-876010601-3.m4a", "size": 5008262, "v": 1794385911}, {"id": "lesson-876010701-2", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "שיעור 2: תחומי התפתחות וסוגיות מרכזיות", "kind": "lesson", "lesson": 2, "date": "2026-10-19", "minutes": 17, "src": "audio/lesson-876010701-2.m4a", "size": 4866844, "v": 1794385956}, {"id": "lesson-876010701-4", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "שיעור 4: טרום לידה ותורשה", "kind": "lesson", "lesson": 4, "date": "2026-11-02", "minutes": 18, "src": "audio/lesson-876010701-4.m4a", "size": 5065343, "v": 1794385967}, {"id": "lesson-876010701-5", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "שיעור 5: למידה עצמית, טרום לידה וגנטיקה", "kind": "lesson", "lesson": 5, "date": "2026-11-09", "minutes": 15, "src": "audio/lesson-876010701-5.m4a", "size": 4425578, "v": 1794385978}, {"id": "lesson-876010601-4", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "תרגיל סטטיסטיקה, שיעור 4: שינוי ערכים, טרנספורמציות ופונקציות הפסד, ו-Jamovi: Transform", "kind": "lesson", "lesson": 4, "date": null, "minutes": 16, "src": "audio/lesson-876010601-4.m4a", "size": 4766477, "v": 1794385922}, {"id": "lesson-873120201-1", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "שיעור 1: רקע היסטורי - ספקנות, תמונת העולם האריסטוטלית והצורך בפילוסופיה חדשה", "kind": "lesson", "lesson": 1, "date": "2026-10-14", "minutes": 17, "src": "audio/lesson-873120201-1.m4a", "size": 14350203, "v": 1794387363}, {"id": "876010701-06", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "איך אפיגנטיקה וסביבת הרחם משנות את הגנים", "kind": "quiz", "lesson": null, "date": "2026-11-16", "minutes": 14, "src": "audio/876010701-06.m4a", "size": 4222676, "v": 1794385428}, {"id": "876010601-06", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "מדדי מרכז ופיזור לקראת הבוחן בסטטיסטיקה", "kind": "quiz", "lesson": null, "date": "2026-11-16", "minutes": 27, "src": "audio/876010601-06.m4a", "size": 8312573, "v": 1794385406}];
+const EP = [{"id": "876010301-quiz-ch2", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "לקראת הבוחן: פרק 2 - תאי מערכת העצבים", "kind": "quiz", "lesson": null, "date": "2026-11-24", "minutes": 18, "src": "audio/876010301-quiz-ch2.m4a", "size": 4989067, "v": 1794385375}, {"id": "876010701-01", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "איך התקופה ברחם מעצבת את המבוגר", "kind": "summary", "lesson": null, "date": null, "minutes": 16, "src": "audio/876010701-01.m4a", "size": 4945226, "v": 1794385418}, {"id": "876010101-01", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "מהתניות ועד זיכרון חבוי במבוא לפסיכולוגיה", "kind": "summary", "lesson": null, "date": null, "minutes": 18, "src": "audio/876010101-01.m4a", "size": 5533273, "v": 1794385350}, {"id": "876010501-01", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "סולמות מדידה ומדדי מרכז בסטטיסטיקה תיאורית", "kind": "summary", "lesson": null, "date": null, "minutes": 18, "src": "audio/876010501-01.m4a", "size": 5656931, "v": 1794385388}, {"id": "876010301-02", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "הולכה חשמלית ותקשורת כימית בתאי העצב", "kind": "quiz", "lesson": null, "date": "2026-11-24", "minutes": 14, "src": "audio/876010301-02.m4a", "size": 4212814, "v": 1794385360}, {"id": "873120201-01", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "מהשד הרמאי ועד הקוגיטו של דקארט", "kind": "summary", "lesson": null, "date": null, "minutes": 21, "src": "audio/873120201-01.m4a", "size": 6499647, "v": 1794385338}, {"id": "lesson-870211503-None", "course": "יהדות פוגשת את מדינת ישראל", "code": "870211503", "title": "יהדות ישראלית – מעמדם של עוברי עבירה", "kind": "lesson", "lesson": null, "date": null, "minutes": 33.2, "src": "audio/lesson-870211503-None.m4a", "size": 9533751, "v": 1794392636}, {"id": "lesson-873110501-1", "course": "מבוא ללוגיקה", "code": "873110501", "title": "שיעור 1: חוברת התרגילים במבוא ללוגיקה (כל 15 התרגילים)", "kind": "lesson", "lesson": 1, "date": "2026-10-14", "minutes": 125.2, "src": "audio/lesson-873110501-1.m4a", "size": 36193028, "v": 1794393773}, {"id": "lesson-873112201-1", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "שיעור 1: הקדמה ותאליס", "kind": "lesson", "lesson": 1, "date": null, "minutes": 49.4, "src": "audio/lesson-873112201-1.m4a", "size": 14132998, "v": 1794392459}, {"id": "lesson-873112201-2", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "שיעור 2: אנכסימנדרוס ואנכסימנס", "kind": "lesson", "lesson": 2, "date": null, "minutes": 29.9, "src": "audio/lesson-873112201-2.m4a", "size": 8525982, "v": 1794393027}, {"id": "lesson-873112201-3", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "שיעור 3: פיתגוראס", "kind": "lesson", "lesson": 3, "date": null, "minutes": 33.9, "src": "audio/lesson-873112201-3.m4a", "size": 9681882, "v": 1794393846}, {"id": "lesson-873112201-4", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "יסודות מחשבת המערב - שיעור 4: הרקליטוס", "kind": "lesson", "lesson": 4, "date": null, "minutes": 16, "src": "audio/lesson-873112201-4.m4a", "size": 4604622, "v": 1794385515}, {"id": "lesson-873112201-5", "course": "יסודות מחשבת המערב", "code": "873112201", "title": "יסודות מחשבת המערב - שיעור 5: פרמנידס וזינון", "kind": "lesson", "lesson": 5, "date": null, "minutes": 16, "src": "audio/lesson-873112201-5.m4a", "size": 4465312, "v": 1794385526}, {"id": "lesson-873120201-2", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "שיעור 2: דקארט - הטלת ספק גורפת והוכחת מציאות האני החושב", "kind": "lesson", "lesson": 2, "date": "2026-10-28", "minutes": 16, "src": "audio/lesson-873120201-2.m4a", "size": 4625512, "v": 1794385591}, {"id": "lesson-873120201-3", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "שיעור 3: דקארט: הוכחת קיום האל על סמך הוכחת קיומו של האני החושב", "kind": "lesson", "lesson": 3, "date": "2026-11-04", "minutes": 52.0, "src": "audio/lesson-873120201-3.m4a", "size": 14760974, "v": 1794393367}, {"id": "lesson-873178601-p1", "course": "סוגיות בפילוסופיה של התפיסה", "code": "873178601", "title": "שיעור פרטני 1: מפגש פרטני 1 – ההקדמה: שני הכובעים של תיאוריית תפיסה; אריסטו מול דקארט; לוק מול דקארט; ברקלי ותומס ריד", "kind": "lesson", "lesson": "פרטני 1", "date": "2026-11-04", "minutes": 44.5, "src": "audio/lesson-873178601-p1.m4a", "size": 12659612, "v": 1794387179}, {"id": "lesson-876010101-1", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור 1: מבוא – מהי פסיכולוגיה", "kind": "lesson", "lesson": 1, "date": null, "minutes": 52.7, "src": "audio/lesson-876010101-1.m4a", "size": 15156514, "v": 1794387525}, {"id": "lesson-876010101-2", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור 2: גישות ושיטות מחקר", "kind": "lesson", "lesson": 2, "date": null, "minutes": 36.6, "src": "audio/lesson-876010101-2.m4a", "size": 10399213, "v": 1794393692}, {"id": "lesson-876010101-3", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור 3: למידה והתניה קלאסית", "kind": "lesson", "lesson": 3, "date": null, "minutes": 16.3, "src": "audio/lesson-876010101-3.m4a", "size": 4642881, "v": 1794385700}, {"id": "lesson-876010101-t-1", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור ת-1: תרגול 1 – היכרות עם הקורס ותחומים בפסיכולוגיה", "kind": "lesson", "lesson": "ת-1", "date": "2026-10-22", "minutes": 40.9, "src": "audio/lesson-876010101-t-1.m4a", "size": 11789921, "v": 1794387097}, {"id": "lesson-876010101-t-2", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור ת-2: תרגול 2 – שיטות מחקר", "kind": "lesson", "lesson": "ת-2", "date": "2026-10-29", "minutes": 29.0, "src": "audio/lesson-876010101-t-2.m4a", "size": 8229993, "v": 1794387562}, {"id": "lesson-876010101-t-3", "course": "מבוא לפסיכולוגיה (הרצאה + תרגול)", "code": "876010101", "title": "שיעור ת-3: תרגול 3 – התניה קלאסית", "kind": "lesson", "lesson": "ת-3", "date": "2026-11-05", "minutes": 32.3, "src": "audio/lesson-876010101-t-3.m4a", "size": 9198534, "v": 1794392046}, {"id": "lesson-876010301-1", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "שיעור 1: מבוא, הקדמה והצגת מבנה הקורס", "kind": "lesson", "lesson": 1, "date": "2026-10-13", "minutes": 31.6, "src": "audio/lesson-876010301-1.m4a", "size": 8921749, "v": 1794387476}, {"id": "lesson-876010301-2", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "שיעור 2: תאי מערכת העצבים ותקשורת בתוך הנוירון", "kind": "lesson", "lesson": 2, "date": "2026-10-20", "minutes": 17, "src": "audio/lesson-876010301-2.m4a", "size": 4797807, "v": 1794385791}, {"id": "lesson-876010301-3", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "שיעור 3: פוטנציאל פעולה ותקשורת בתוך הנוירון", "kind": "lesson", "lesson": 3, "date": "2026-11-03", "minutes": 19, "src": "audio/lesson-876010301-3.m4a", "size": 5607583, "v": 1794385805}, {"id": "lesson-876010301-4", "course": "מבוא לפסיכולוגיה פיזיולוגית א'", "code": "876010301", "title": "שיעור 4: תקשורת בין נוירונים וסינפסה", "kind": "lesson", "lesson": 4, "date": "2026-11-10", "minutes": 18, "src": "audio/lesson-876010301-4.m4a", "size": 4997420, "v": 1794385817}, {"id": "lesson-876010501-1", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "שיעור 1: מבוא: מושגי יסוד, סוגי משתנים וסולמות מדידה", "kind": "lesson", "lesson": 1, "date": "2026-10-12", "minutes": 64.1, "src": "audio/lesson-876010501-1.m4a", "size": 18113993, "v": 1794387273}, {"id": "lesson-876010501-2", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 2: ארגון נתונים, לוחות ותרשימים", "kind": "lesson", "lesson": 2, "date": "2026-10-19", "minutes": 17, "src": "audio/lesson-876010501-2.m4a", "size": 4816317, "v": 1794385838}, {"id": "lesson-876010501-3", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 3: סכימה ומדדי מרכז", "kind": "lesson", "lesson": 3, "date": "2026-10-26", "minutes": 18, "src": "audio/lesson-876010501-3.m4a", "size": 5245374, "v": 1794385850}, {"id": "lesson-876010601-1", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "תרגיל סטטיסטיקה, שיעור 1: מיון משתנים וטרנספורמציות", "kind": "lesson", "lesson": 1, "date": null, "minutes": 17, "src": "audio/lesson-876010601-1.m4a", "size": 4855055, "v": 1794385887}, {"id": "lesson-876010701-1", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "שיעור 1: מבוא: הגדרת התחום, מטרות, מושגים בסיסיים ועקרונות להבנת ההתפתחות; סוגיות מרכזיות; הקשרי ההתפתחות (הכרות ומבוא)", "kind": "lesson", "lesson": 1, "date": "2026-10-12", "minutes": 36.4, "src": "audio/lesson-876010701-1.m4a", "size": 10414936, "v": 1794386910}, {"id": "lesson-870211503-None-2", "course": "יהדות פוגשת את מדינת ישראל", "code": "870211503", "title": "היחס למיעוטים", "kind": "lesson", "lesson": null, "date": null, "minutes": 26.0, "src": "audio/lesson-870211503-None-2.m4a", "size": 7480818, "v": 1794393082}, {"id": "lesson-873120201-4", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "שיעור 4: דקארט - העצמים המתפשטים, בעיית גוף ונפש והפרוגרמה המכניסטית", "kind": "lesson", "lesson": 4, "date": "2026-11-11", "minutes": 16, "src": "audio/lesson-873120201-4.m4a", "size": 4452519, "v": 1794385613}, {"id": "lesson-876010501-4", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 4: טרנספורמציות ופונקציות הפסד", "kind": "lesson", "lesson": 4, "date": "2026-11-02", "minutes": 16, "src": "audio/lesson-876010501-4.m4a", "size": 4692484, "v": 1794385861}, {"id": "lesson-876010501-5", "course": "מבוא לסטטיסטיקה", "code": "876010501", "title": "מבוא לסטטיסטיקה, שיעור 5: מדדי פיזור", "kind": "lesson", "lesson": 5, "date": "2026-11-09", "minutes": 17, "src": "audio/lesson-876010501-5.m4a", "size": 4844635, "v": 1794385874}, {"id": "lesson-876010601-2", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "תרגיל סטטיסטיקה, שיעור 2: ארגון נתונים", "kind": "lesson", "lesson": 2, "date": null, "minutes": 17, "src": "audio/lesson-876010601-2.m4a", "size": 4960451, "v": 1794385899}, {"id": "lesson-876010601-3", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "תרגיל סטטיסטיקה, שיעור 3: סכימה ומדדי מרכז, ו-Jamovi: Compute", "kind": "lesson", "lesson": 3, "date": null, "minutes": 17, "src": "audio/lesson-876010601-3.m4a", "size": 5008262, "v": 1794385911}, {"id": "lesson-876010701-2", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "שיעור 2: מבוא: הגדרת התחום, מטרות, מושגים בסיסיים ועקרונות להבנת ההתפתחות; סוגיות מרכזיות; הקשרי ההתפתחות (מבוא – המשך)", "kind": "lesson", "lesson": 2, "date": "2026-10-19", "minutes": 43.5, "src": "audio/lesson-876010701-2.m4a", "size": 12437810, "v": 1794393738}, {"id": "lesson-876010701-4", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "שיעור 4: טרום לידה ותורשה", "kind": "lesson", "lesson": 4, "date": "2026-11-02", "minutes": 18, "src": "audio/lesson-876010701-4.m4a", "size": 5065343, "v": 1794385967}, {"id": "lesson-876010701-5", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "שיעור 5: למידה עצמית, טרום לידה וגנטיקה", "kind": "lesson", "lesson": 5, "date": "2026-11-09", "minutes": 15, "src": "audio/lesson-876010701-5.m4a", "size": 4425578, "v": 1794385978}, {"id": "lesson-876010601-4", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "תרגיל סטטיסטיקה, שיעור 4: שינוי ערכים, טרנספורמציות ופונקציות הפסד, ו-Jamovi: Transform", "kind": "lesson", "lesson": 4, "date": null, "minutes": 16, "src": "audio/lesson-876010601-4.m4a", "size": 4766477, "v": 1794385922}, {"id": "lesson-873120201-1", "course": "תולדות הפילוסופיה החדשה מדקארט עד קאנט", "code": "873120201", "title": "שיעור 1: רקע היסטורי: ספקנות וגבולותיה בראשית העת החדשה; תמונת העולם האריסטוטלית וחידושי המדע; ערעור המדע האריסטוטלי והצורך בפילוסופיה החדשה", "kind": "lesson", "lesson": 1, "date": "2026-10-14", "minutes": 50.4, "src": "audio/lesson-873120201-1.m4a", "size": 14350203, "v": 1794387363}, {"id": "876010701-06", "course": "מבוא לפסיכולוגיה התפתחותית א'", "code": "876010701", "title": "איך אפיגנטיקה וסביבת הרחם משנות את הגנים", "kind": "quiz", "lesson": null, "date": "2026-11-16", "minutes": 14, "src": "audio/876010701-06.m4a", "size": 4222676, "v": 1794385428}, {"id": "876010601-06", "course": "תרגיל סטטיסטיקה ושימושי מחשב", "code": "876010601", "title": "מדדי מרכז ופיזור לקראת הבוחן בסטטיסטיקה", "kind": "quiz", "lesson": null, "date": "2026-11-16", "minutes": 27, "src": "audio/876010601-06.m4a", "size": 8312573, "v": 1794385406}];
 const I = {
-  play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>',
-  pause:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>',
-  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v8M8.5 12.5 12 16l3.5-3.5"/></svg>',
-  done:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v8m-3.5-3.5L12 15l3.5-3.5" stroke="#0E1424" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>',
-  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>',
-  shuffle:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>'
+  play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6z"/></svg>',
+  pause:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>',
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v8M8.5 12.5 12 16l3.5-3.5"/></svg>',
+  done:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m7.8 12.3 2.8 2.8 5.6-5.8" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 12.5 4 4 8-9"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>',
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v9h14v-9h-1"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>'
 };
 const KIND={quiz:'לקראת בוחן',lesson:'שיעור',summary:'סיכום'};
 const $=s=>document.querySelector(s), audio=$('#audio');
@@ -166,57 +260,95 @@ const S={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.pars
 let pos=S.get('pos',{}), done=S.get('done',{}), view='home', courseOpen=null, cur=null, saved=new Set(), dling={}, blobUrl=null;
 const byId=Object.fromEntries(EP.map(e=>[e.id,e]));
 const courses=[...new Set(EP.map(e=>e.course))].sort((a,b)=>a.localeCompare(b,'he'));
-const PAL=[['#1E6B5C','#0E3B33'],['#7A3FB8','#3E1F63'],['#C2410C','#6B2306'],['#1D4ED8','#0F2A75'],['#B91C5C','#5E0E2F'],['#0E7490','#06404F'],['#4D7C0F','#264006'],['#A16207','#553303'],['#6D28D9','#36146E'],['#BE123C','#5F0A1E']];
-const colorOf=c=>PAL[[...c].reduce((a,ch)=>a+ch.charCodeAt(0),0)%PAL.length];
+// course "album" art: a color pair + one of five geometric patterns, chosen from the course name
+const PAL=[['#2F5BFF','#7C9BFF'],['#F0603C','#FFA486'],['#0F9D6E','#5FD3A8'],['#8B4DE0','#C6A2FF'],['#E39A0B','#FFD06B'],['#E0447A','#FF9CBF'],['#0B93B5','#6AD6EE'],['#4C5BD9','#A3ADFF'],['#2E8B57','#93DDB0'],['#C8501A','#FFB48A'],['#6F7F18','#C9D86A'],['#B0369B','#F09ADF']];
+const hash=c=>[...String(c)].reduce((a,ch)=>(a*31+ch.charCodeAt(0))>>>0,7);
+const colorOf=c=>PAL[hash(c)%PAL.length];
+function pattern(c){const [a,b]=colorOf(c), k=hash(c+'#')%5, w='rgba(255,255,255,';
+  const P=[
+    `<circle cx="100" cy="0" r="78" fill="${b}"/><circle cx="100" cy="0" r="52" fill="${a}"/><circle cx="100" cy="0" r="28" fill="${w}.35)"/>`,
+    `<path d="M-5 62 Q25 42 50 62 T105 62 V105 H-5Z" fill="${b}"/><path d="M-5 78 Q25 58 50 78 T105 78 V105 H-5Z" fill="${w}.25)"/>`,
+    [0,1,2,3].map(y=>[0,1,2,3].map(x=>`<circle cx="${18+x*22}" cy="${14+y*22}" r="${(x+y)%3?4:7}" fill="${(x+y)%3?w+'.35)':b}"/>`).join('')).join(''),
+    `<path d="M40 -10 L110 60 L110 30 L70 -10Z" fill="${b}"/><path d="M10 -10 L110 90 L110 76 L24 -10Z" fill="${w}.28)"/>`,
+    `<rect x="52" y="8" width="40" height="40" rx="20" fill="${b}"/><rect x="62" y="18" width="20" height="20" rx="10" fill="${w}.4)"/><rect x="8" y="-20" width="34" height="48" rx="17" fill="${w}.18)"/>`];
+  return `<svg class="pat" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="100" height="100" fill="${a}"/>${P[k]}</svg>`}
 const fmtT=s=>{s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${x}`:`${m}:${x}`};
 const fmtD=s=>{const m=String(s||'').match(/(\d{4})-(\d{2})-(\d{2})/);return m?`${+m[3]}.${+m[2]}`:''};
+const nEp=n=>n===1?'פרק אחד':n+' פרקים';
+const hrs=m=>m<60?m+" דק'":(Math.round(m/6)/10)+' שעות';
 function el(t,a,...k){const e=document.createElement(t);for(const[x,y]of Object.entries(a||{})){if(y==null||y===false)continue;if(x.startsWith('on'))e.addEventListener(x.slice(2),y);else if(x==='html')e.innerHTML=y;else if(x==='style')e.style.cssText=y;else e.setAttribute(x,y)}for(const c of k.flat())if(c!=null&&c!==false)e.append(c.nodeType?c:document.createTextNode(c));return e}
-function cover(course,label){const [a,b]=colorOf(course);return el('div',{class:'cover',style:`background:linear-gradient(135deg,${a},${b})`},label?el('small',{},label):null,course)}
+function cover(course,label,small){const c=el('div',{class:'cover'+(small?' sm':''),html:pattern(course)});if(!small){if(label)c.append(el('span',{class:'lb'},label));c.append(el('span',{class:'nm'},course))}return c}
 function sortEps(list){return list.slice().sort((a,b)=>(a.kind==='quiz'?0:1)-(b.kind==='quiz'?0:1)||String(a.date||'0').localeCompare(String(b.date||'0'))||String(a.lesson||'').localeCompare(String(b.lesson||''),'he',{numeric:true}))}
 function progOf(e){const p=pos[e.id]||0, d=(e.minutes||1)*60;return done[e.id]?1:Math.min(1,p/d)}
+function courseStats(c){const l=EP.filter(e=>e.course===c);return {n:l.length,heard:l.filter(e=>done[e.id]).length,min:l.reduce((a,e)=>a+(e.minutes||0),0)}}
 
 async function loadSaved(){saved=new Set();try{const c=await caches.open('pods');for(const r of await c.keys()){const id=decodeURIComponent(new URL(r.url).pathname.split('/').pop()).replace(/\.m4a$/,'');saved.add(id)}}catch(e){}}
 
-function epRow(e,showCourse){
-  const on=cur&&cur.id===e.id, playing=on&&!audio.paused;
-  const p=progOf(e);
-  const meta=el('div',{class:'meta'},e.kind!=='lesson'?el('span',{class:'tag'+(e.kind==='quiz'?' quiz':'')},KIND[e.kind]):null,
-    showCourse?el('span',{},e.course):null,[e.date?fmtD(e.date):null,e.minutes?e.minutes+" דק'":null].filter(Boolean).join(' · '),
-    done[e.id]?el('span',{},'· הושמע'):null);
-  const dlBtn=el('button',{type:'button',class:'dl'+(saved.has(e.id)?' done':''),'aria-label':saved.has(e.id)?'הורד לטלפון. לחיצה להסרה':'הורדה לטלפון',onclick:ev=>{ev.stopPropagation();saved.has(e.id)?removeDl(e):download(e)}});
-  if(dling[e.id]!=null){dlBtn.append(el('span',{class:'ring',style:`--p:${dling[e.id]}%`}));dlBtn.setAttribute('aria-label',`מוריד ${dling[e.id]}%`)}
+function epRow(e,mode,i){ // mode 'course' = numbered tracklist; otherwise cover thumb. Tapping the row plays/pauses, like Spotify.
+  const on=cur&&cur.id===e.id, playing=on&&!audio.paused, p=progOf(e);
+  const eq=()=>el('span',{class:'eq'+(playing?'':' paused'),'aria-hidden':'true'},el('i'),el('i'),el('i'));
+  const lead=mode==='course'?el('span',{class:'num'},on?eq():String(i+1)):el('span',{class:'th'},cover(e.course,null,true),on?el('span',{class:'ov'},eq()):null);
+  const mins=e.minutes?Math.round(e.minutes)+" דק'":null;
+  const meta=el('span',{class:'meta'},e.kind!=='lesson'?el('span',{class:'tag '+e.kind},KIND[e.kind]):null,done[e.id]?el('span',{class:'tag ok'},'הושמע'):null,
+    [e.date?fmtD(e.date):null,mins].filter(Boolean).join(' · '));
+  const dlBtn=el('button',{type:'button',class:'dl'+(saved.has(e.id)?' done':''),'aria-label':saved.has(e.id)?'שמור בטלפון. לחיצה להסרה':'הורדה לטלפון',onclick:ev=>{ev.stopPropagation();saved.has(e.id)?removeDl(e):download(e)}});
+  if(dling[e.id]!=null){dlBtn.append(el('span',{class:'ring',style:`--p:${dling[e.id]}%`}),el('span',{class:'pct'},dling[e.id]+''));dlBtn.setAttribute('aria-label',`מוריד ${dling[e.id]}%`)}
   else dlBtn.innerHTML=saved.has(e.id)?I.done:I.dl;
-  return el('div',{class:'ep'+(on?' on':''),id:'ep-'+e.id},
-    el('button',{type:'button',class:'pl','aria-label':(playing?'השהיה: ':'ניגון: ')+e.title,html:playing?I.pause:I.play,onclick:()=>playEp(e)}),
-    el('button',{type:'button',class:'tx',onclick:()=>playEp(e,true)},el('b',{},e.title),meta,p>0.01&&!done[e.id]?el('div',{class:'prog'},el('i',{style:`width:${Math.round(p*100)}%`})):null),
+  return el('div',{class:'ep'+(on?' on':'')+(done[e.id]?' heard':''),id:'ep-'+e.id,'data-mode':mode||'','data-i':i},
+    el('button',{type:'button',class:'tx','aria-label':(playing?'השהיה: ':'ניגון: ')+e.title,onclick:()=>playEp(e)},lead,
+      el('span',{class:'t'},el('b',{},e.title),mode!=='course'?el('span',{class:'crs'},e.course):null,meta,p>0.01&&!done[e.id]?el('span',{class:'prog'},el('i',{style:`width:${Math.round(p*100)}%`})):null)),
     dlBtn);
 }
+function list(eps,mode){return el('div',{class:'card'},eps.map((e,i)=>epRow(e,mode,i)))}
+function tile(c,go){const s=courseStats(c);
+  return el('button',{type:'button',class:'tile',onclick:go},cover(c),el('b',{},c),el('div',{class:'sub'},nEp(s.n)+(s.heard?` · ${s.heard} הושמעו`:'')),s.heard?el('div',{class:'mbar'},el('i',{style:`width:${Math.round(s.heard/s.n*100)}%`})):null)}
+function greet(){const h=new Date().getHours();return h<5?'לילה טוב':h<12?'בוקר טוב':h<17?'צהריים טובים':h<21?'ערב טוב':'לילה טוב'}
+function installHint(){
+  const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  if(standalone||S.get('noInstall',false))return null;
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const box=el('div',{class:'install',role:'note'},el('span',{class:'ic',html:I.phone}),
+    el('p',{},el('b',{},'להתקין כאפליקציה בטלפון'),ios?el('span',{html:'בספארי: לוחצים על '+'<b style="display:inline">שיתוף</b>'+' ואז על "הוספה למסך הבית".'}):deferredPrompt?'אייקון במסך הבית, נפתח כמו אפליקציה, עובד גם בלי אינטרנט.':'בתפריט הדפדפן (⋮) בוחרים "התקנת אפליקציה" או "הוספה למסך הבית".'),
+    !ios&&deferredPrompt?el('button',{type:'button',class:'ok',onclick:async()=>{deferredPrompt.prompt();await deferredPrompt.userChoice.catch(()=>{});deferredPrompt=null;render()}},'התקנה'):null,
+    el('button',{type:'button',class:'x','aria-label':'הסתרה',html:I.x,onclick:()=>{S.set('noInstall',true);box.remove()}}));
+  return box}
 function render(){
-  const q=$('#q').value.trim().toLowerCase(), main=$('#main'); main.replaceChildren();
+  const q=$('#q').value.trim().toLowerCase(), main=$('#main'); main.replaceChildren(); $('#clr').hidden=!q;
+  $('#hi').textContent=greet()+', יובל';
   document.querySelectorAll('nav.tabs button').forEach(b=>b.dataset.v===view?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
-  if(q){const hits=EP.filter(e=>(e.title+' '+e.course+' '+(KIND[e.kind]||'')).toLowerCase().includes(q));
-    main.append(el('h2',{},`תוצאות (${hits.length})`),hits.length?el('div',{},sortEps(hits).map(e=>epRow(e,true))):el('p',{class:'empty'},'לא נמצאו פרקים.'));return}
+  const badge=$('#dlBadge'); badge.hidden=!saved.size; badge.textContent=saved.size;
+  if(q){const hits=EP.filter(e=>(e.title+' '+e.course+' '+(KIND[e.kind]||'')+' '+(e.covers||'')).toLowerCase().includes(q));
+    main.append(el('h2',{},hits.length?`נמצאו ${nEp(hits.length)}`:'חיפוש'),hits.length?list(sortEps(hits)):el('p',{class:'empty'},el('b',{},'לא מצאנו פרקים'),'נסה מילה אחרת, למשל שם של קורס או מושג.'));return}
   if(view==='courses'&&courseOpen){
-    const list=sortEps(EP.filter(e=>e.course===courseOpen));
-    main.append(el('button',{type:'button',class:'back',html:I.back+'<span>כל הקורסים</span>',onclick:()=>{courseOpen=null;render()}}),
-      el('div',{class:'chead'},cover(courseOpen),el('div',{},el('h2',{},courseOpen),el('div',{class:'muted'},`${list.length} פרקים · ${Math.round(list.reduce((a,e)=>a+(e.minutes||0),0)/60*10)/10} שעות`),
-        el('div',{class:'actions'},el('button',{type:'button',class:'pill primary',html:I.play+'<span>ניגון</span>',onclick:()=>{const nx=list.find(e=>!done[e.id])||list[0];playEp(nx)}}),
-          el('button',{type:'button',class:'pill',html:I.dl+'<span>הורדת הקורס</span>',onclick:()=>list.forEach(e=>{if(!saved.has(e.id))download(e)})})))),
-      el('div',{},list.map(e=>epRow(e,false))));return}
-  if(view==='courses'){main.append(el('h2',{},'קורסים'),el('div',{class:'grid'},courses.map(c=>{const n=EP.filter(e=>e.course===c).length;
-    return el('button',{type:'button',class:'tile',onclick:()=>{courseOpen=c;render();scrollTo(0,0)}},cover(c),el('b',{},c),el('span',{},n+' פרקים'))})));return}
-  if(view==='downloads'){const list=EP.filter(e=>saved.has(e.id));
-    main.append(el('h2',{},'הורדות'),el('p',{class:'muted'},'פרקים שהורדו מתנגנים גם בלי אינטרנט.'));
-    if(!list.length){main.append(el('p',{class:'empty'},'עוד לא הורדת פרקים. לחץ על סמל ההורדה ליד פרק, או על "הורדת הקורס" בעמוד של קורס.'));return}
-    main.append(el('div',{},sortEps(list).map(e=>epRow(e,true))));return}
+    const eps=sortEps(EP.filter(e=>e.course===courseOpen)), s=courseStats(courseOpen), nx=eps.find(e=>!done[e.id])||eps[0];
+    const left=eps.filter(e=>!saved.has(e.id)).length;
+    main.append(el('button',{type:'button',class:'back',html:I.back+'<span>כל הקורסים</span>',onclick:()=>{courseOpen=null;render();scrollTo(0,0)}}),
+      el('div',{class:'hero',html:pattern(courseOpen)},el('div',{class:'k'},'קורס'),el('h2',{},courseOpen),
+        el('div',{class:'st'},`${nEp(s.n)} · ${hrs(s.min)} · ${s.heard?`הושמעו ${s.heard} מתוך ${s.n}`:'עוד לא התחלת'}`),
+        el('div',{class:'hb'},el('i',{style:`width:${Math.round(s.heard/Math.max(1,s.n)*100)}%`})),
+        el('div',{class:'actions'},el('button',{type:'button',class:'pill primary',html:I.play+`<span>${s.heard||pos[nx.id]?'להמשיך':'להתחיל'}</span>`,onclick:()=>playEp(nx,true)}),
+          left?el('button',{type:'button',class:'pill',html:I.dl+`<span>הורדת כל הקורס</span>`,onclick:()=>eps.forEach(e=>{if(!saved.has(e.id))download(e)})}):el('span',{class:'pill',html:I.check+'<span>הכל שמור בטלפון</span>'}))),
+      list(eps,'course'));return}
+  if(view==='courses'){main.append(el('h2',{},'כל הקורסים'),el('div',{class:'grid'},courses.map(c=>tile(c,()=>{courseOpen=c;render();scrollTo(0,0)}))));return}
+  if(view==='downloads'){const eps=EP.filter(e=>saved.has(e.id)), mb=eps.reduce((a,e)=>a+(e.size||0),0)/1048576;
+    main.append(el('h2',{},'הורדות'));
+    if(!eps.length){main.append(el('p',{class:'empty'},el('b',{},'עוד לא הורדת פרקים'),'לוחצים על סמל ההורדה ליד פרק, או "הורדת כל הקורס" בעמוד של קורס. פרק שהורד מתנגן גם בלי אינטרנט.'));return}
+    main.append(el('p',{class:'muted',style:'margin:-4px 0 12px'},(eps.length===1?'פרק אחד שמור בטלפון':eps.length+' פרקים שמורים בטלפון')+(mb?` · ${Math.round(mb)}MB`:'')+'. מתנגנים גם בלי אינטרנט.'),list(sortEps(eps)));return}
   // home
-  const cont=EP.filter(e=>(pos[e.id]||0)>20&&!done[e.id]).sort((a,b)=>(S.get('ts',{})[b.id]||0)-(S.get('ts',{})[a.id]||0));
-  if(cont.length)main.append(el('h2',{},'המשך האזנה'),el('div',{},cont.slice(0,4).map(e=>epRow(e,true))));
+  const ts=S.get('ts',{});
+  const cont=EP.filter(e=>(pos[e.id]||0)>20&&!done[e.id]).sort((a,b)=>(ts[b.id]||0)-(ts[a.id]||0));
+  if(cont.length){const e=cont[0];main.append(el('button',{type:'button',class:'resume',onclick:()=>playEp(e,true)},cover(e.course,null),
+    el('div',{class:'tx'},el('div',{class:'k'},'להמשיך מאיפה שעצרת'),el('b',{},e.title),el('div',{class:'s'},`${e.course} · נשארו ${Math.max(1,Math.round((e.minutes||0)-(pos[e.id]||0)/60))} דק'`)),
+    el('span',{class:'go',html:I.play})))}
+  const hint=installHint(); if(hint)main.append(hint);
+  const totalHeard=EP.filter(e=>done[e.id]).length;
+  if(!cont.length&&!totalHeard)main.append(el('div',{class:'stat'},el('div',{},el('b',{},EP.length),el('span',{},'פרקים מוכנים')),el('div',{},el('b',{},courses.length),el('span',{},'קורסים')),el('div',{},el('b',{},Math.round(EP.reduce((a,e)=>a+(e.minutes||0),0)/60)),el('span',{},'שעות האזנה'))));
   const quiz=EP.filter(e=>e.kind==='quiz');
-  if(quiz.length)main.append(el('h2',{},'לקראת בחנים'),el('div',{},sortEps(quiz).map(e=>epRow(e,true))));
-  main.append(el('h2',{},'הקורסים שלך'),el('div',{class:'row-scroll'},courses.map(c=>el('button',{type:'button',class:'tile',onclick:()=>{view='courses';courseOpen=c;render();scrollTo(0,0)}},cover(c),el('b',{},c),el('span',{},EP.filter(e=>e.course===c).length+' פרקים')))));
+  if(quiz.length)main.append(el('h2',{},'לקראת הבחנים'),list(sortEps(quiz)));
+  main.append(el('h2',{},el('span',{},'הקורסים שלך'),el('button',{type:'button',class:'lnk',onclick:()=>{view='courses';courseOpen=null;render();scrollTo(0,0)}},'לכל הקורסים')),
+    el('div',{class:'row-scroll'},courses.map(c=>tile(c,()=>{view='courses';courseOpen=c;render();scrollTo(0,0)}))));
   const recent=EP.filter(e=>e.kind==='lesson').sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,8);
-  main.append(el('h2',{},'השיעורים האחרונים'),el('div',{},recent.map(e=>epRow(e,true))));
+  main.append(el('h2',{},'השיעורים האחרונים'),list(recent));
 }
 
 async function srcFor(e){
@@ -235,57 +367,64 @@ async function playEp(e,openFull){
 function showErr(err){if(err&&err.name==='AbortError')return;$('#err').hidden=false;$('#err').textContent=navigator.onLine?'הניגון לא הצליח. לחץ שוב על ניגון.':'אין אינטרנט, והפרק הזה עוד לא הורד לטלפון.'}
 function paintPlayer(){
   if(!cur)return; const [a,b]=colorOf(cur.course), playing=!audio.paused;
-  $('#miniCv').style.background=`linear-gradient(135deg,${a},${b})`; $('#miniT').textContent=cur.title; $('#miniC').textContent=cur.course;
+  document.body.classList.toggle('playing',playing);
+  $('#miniCv').replaceChildren(cover(cur.course,null,true)); $('#miniT').textContent=cur.title; $('#miniC').textContent=cur.course;
   $('#miniPP').innerHTML=playing?I.pause:I.play; $('#miniPP').setAttribute('aria-label',playing?'השהיה':'ניגון');
   $('#fullPP').innerHTML=playing?I.pause:I.play; $('#fullPP').setAttribute('aria-label',playing?'השהיה':'ניגון');
   $('#fullT').textContent=cur.title; $('#fullC').textContent=cur.course; $('#fullKind').textContent=KIND[cur.kind]+(cur.date?' · '+fmtD(cur.date):'');
-  const cv=$('#fullCv'); cv.replaceWith(Object.assign(cover(cur.course,KIND[cur.kind]),{id:'fullCv'})); $('#full').style.setProperty('--c1',a);
-  $('#fullDl').innerHTML=saved.has(cur.id)?I.done:I.dl; $('#fullDl').style.color=saved.has(cur.id)?'var(--accent)':'';
+  $('#fullCv').replaceChildren(cover(cur.course,KIND[cur.kind])); $('#full').style.setProperty('--c2',b+'55');
+  $('#fullDl').innerHTML=saved.has(cur.id)?I.done:I.dl; $('#fullDl').style.color=saved.has(cur.id)?'var(--good)':'';
+  $('#fullDl').setAttribute('aria-label',saved.has(cur.id)?'שמור בטלפון':'הורדה לטלפון');
 }
 function setFull(o){document.body.classList.toggle('full-open',o);if(o)$('#closeFull').focus()}
-function setupSession(e){if(!('mediaSession' in navigator))return;navigator.mediaSession.metadata=new MediaMetadata({title:e.title,artist:e.course,album:'הלימודים שלי',artwork:[{src:'icon-512.png',sizes:'512x512',type:'image/png'}]});
+function setupSession(e){if(!('mediaSession' in navigator))return;navigator.mediaSession.metadata=new MediaMetadata({title:e.title,artist:e.course,album:'הפודקאסטים שלי',artwork:[{src:'icon-512.png',sizes:'512x512',type:'image/png'}]});
   const ms=navigator.mediaSession; ms.setActionHandler('play',()=>audio.play()); ms.setActionHandler('pause',()=>audio.pause());
-  ms.setActionHandler('seekbackward',()=>audio.currentTime-=15); ms.setActionHandler('seekforward',()=>audio.currentTime+=30);
+  ms.setActionHandler('seekbackward',()=>audio.currentTime=Math.max(0,audio.currentTime-15)); ms.setActionHandler('seekforward',()=>audio.currentTime+=30);
   try{ms.setActionHandler('seekto',d=>{audio.currentTime=d.seekTime})}catch(x){} try{ms.setActionHandler('nexttrack',playNext)}catch(x){}}
-function playNext(){if(!cur)return;const list=sortEps(EP.filter(e=>e.course===cur.course));const i=list.findIndex(e=>e.id===cur.id);if(list[i+1])playEp(list[i+1])}
+function playNext(){if(!cur)return;const l=sortEps(EP.filter(e=>e.course===cur.course));const i=l.findIndex(e=>e.id===cur.id);if(l[i+1])playEp(l[i+1]);else paintPlayer()}
 
 async function download(e){
-  if(dling[e.id]!=null||saved.has(e.id))return; dling[e.id]=0; render();
+  if(dling[e.id]!=null||saved.has(e.id))return; dling[e.id]=0; updateRow(e);
   try{
     const url=new URL(e.src,location.href).href; const r=await fetch(e.src+'?v='+e.v,{cache:'no-store'}); if(!r.ok)throw new Error(r.status);
     const total=+r.headers.get('content-length')||e.size||0; const reader=r.body.getReader(); const chunks=[]; let got=0, last=0;
-    for(;;){const {done:d,value}=await reader.read(); if(d)break; chunks.push(value); got+=value.length; const p=total?Math.min(99,Math.floor(got/total*100)):0; if(p-last>=4){last=p;dling[e.id]=p;updateRow(e)}}
+    for(;;){const {done:d,value}=await reader.read(); if(d)break; chunks.push(value); got+=value.length; const p=total?Math.min(99,Math.floor(got/total*100)):0; if(p-last>=3){last=p;dling[e.id]=p;updateRow(e)}}
     const blob=new Blob(chunks,{type:'audio/mp4'}); const c=await caches.open('pods');
     await c.put(url,new Response(blob,{headers:{'Content-Type':'audio/mp4','Content-Length':String(blob.size)}}));
     saved.add(e.id); if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
   }catch(err){toast('ההורדה לא הושלמה. בדוק שיש אינטרנט ונסה שוב.')}
-  delete dling[e.id]; render(); paintPlayer();
+  delete dling[e.id]; if(Object.keys(dling).length)updateRow(e); else render(); paintPlayer();
 }
-async function removeDl(e){try{const c=await caches.open('pods');await c.delete(new URL(e.src,location.href).href);saved.delete(e.id)}catch(err){}render();paintPlayer()}
-function updateRow(e){const old=document.getElementById('ep-'+e.id);if(old)old.replaceWith(epRow(e,!!old.querySelector('.meta span:not(.tag)')))}
-let tt; function toast(m){clearTimeout(tt);let t=$('#toast');if(!t){t=el('div',{id:'toast',role:'status',style:'position:fixed;inset-inline:16px;bottom:calc(140px + env(safe-area-inset-bottom));background:#fff;color:#111;padding:12px 14px;border-radius:10px;z-index:30;font-weight:500;text-align:center'});document.body.append(t)}t.textContent=m;t.hidden=false;tt=setTimeout(()=>t.hidden=true,3500)}
+async function removeDl(e){try{const c=await caches.open('pods');await c.delete(new URL(e.src,location.href).href);saved.delete(e.id)}catch(err){}render();paintPlayer();toast('הפרק הוסר מהטלפון')}
+function updateRow(e){const old=document.getElementById('ep-'+e.id);if(old)old.replaceWith(epRow(e,old.dataset.mode,+old.dataset.i));else render()}
+let tt; function toast(m){clearTimeout(tt);let t=$('#toast');if(!t){t=el('div',{id:'toast',role:'status'});document.body.append(t)}t.textContent=m;t.hidden=false;tt=setTimeout(()=>t.hidden=true,3200)}
 
+let seeking=false; const sk=$('#seek');
+const paintSeek=()=>sk.style.setProperty('--sv',(sk.value/10)+'%');
 audio.addEventListener('timeupdate',()=>{if(!cur)return;const t=audio.currentTime,d=audio.duration||0;
   if(Math.floor(t)%5===0){pos[cur.id]=Math.floor(t);S.set('pos',pos);const ts=S.get('ts',{});ts[cur.id]=Date.now();S.set('ts',ts)}
   if(d&&t/d>0.95&&!done[cur.id]){done[cur.id]=true;S.set('done',done)}
-  $('#miniBar').style.width=(d?t/d*100:0)+'%'; if(!seeking){$('#seek').value=d?Math.round(t/d*1000):0} $('#tCur').textContent=fmtT(t); $('#tDur').textContent=fmtT(d);
+  $('#miniBar').style.width=(d?t/d*100:0)+'%'; if(!seeking){sk.value=d?Math.round(t/d*1000):0;paintSeek()} $('#tCur').textContent=fmtT(t); $('#tDur').textContent='-'+fmtT(Math.max(0,d-t));
   if('mediaSession' in navigator&&navigator.mediaSession.setPositionState&&d){try{navigator.mediaSession.setPositionState({duration:d,position:Math.min(t,d),playbackRate:audio.playbackRate})}catch(x){}}});
 audio.addEventListener('play',()=>{paintPlayer();updateCur()}); audio.addEventListener('pause',()=>{paintPlayer();updateCur();if(cur){pos[cur.id]=Math.floor(audio.currentTime);S.set('pos',pos)}});
 audio.addEventListener('ended',()=>{if(cur){done[cur.id]=true;S.set('done',done)}playNext()});
 audio.addEventListener('error',()=>showErr());
 function updateCur(){if(cur)updateRow(cur)}
-let seeking=false; const sk=$('#seek'); sk.addEventListener('input',()=>{seeking=true;$('#tCur').textContent=fmtT(sk.value/1000*(audio.duration||0))}); sk.addEventListener('change',()=>{audio.currentTime=sk.value/1000*(audio.duration||0);seeking=false});
+sk.addEventListener('input',()=>{seeking=true;paintSeek();$('#tCur').textContent=fmtT(sk.value/1000*(audio.duration||0))}); sk.addEventListener('change',()=>{audio.currentTime=sk.value/1000*(audio.duration||0);seeking=false});
 $('#miniPP').onclick=()=>cur&&playEp(cur); $('#fullPP').onclick=()=>cur&&playEp(cur);
+$('#miniB15').onclick=()=>audio.currentTime=Math.max(0,audio.currentTime-15);
 $('#openFull').onclick=()=>setFull(true); $('#closeFull').onclick=()=>setFull(false);
 $('#b15').onclick=()=>audio.currentTime=Math.max(0,audio.currentTime-15); $('#f30').onclick=()=>audio.currentTime+=30; $('#next').onclick=playNext;
 $('#fullDl').onclick=()=>cur&&(saved.has(cur.id)?removeDl(cur):download(cur));
 const RATES=[1,1.25,1.5,1.75,2,0.8]; $('#speed').textContent=S.get('rate',1)+'x';
 $('#speed').onclick=()=>{const r=RATES[(RATES.indexOf(S.get('rate',1))+1)%RATES.length];S.set('rate',r);audio.playbackRate=r;$('#speed').textContent=r+'x'};
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{view=b.dataset.v;courseOpen=null;$('#q').value='';render();scrollTo(0,0)});
-$('#q').addEventListener('input',render);
+$('#q').addEventListener('input',render); $('#clr').onclick=()=>{$('#q').value='';render();$('#q').focus()};
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape')setFull(false)});
+let ty=null; $('#full').addEventListener('touchstart',ev=>{ty=ev.touches[0].clientY},{passive:true}); $('#full').addEventListener('touchend',ev=>{if(ty!=null&&ev.changedTouches[0].clientY-ty>110&&!ev.target.closest('.seek'))setFull(false);ty=null});
 const setOnline=()=>document.body.classList.toggle('offline',!navigator.onLine); addEventListener('online',setOnline); addEventListener('offline',setOnline); setOnline();
-function goHash(){const id=decodeURIComponent(location.hash.slice(1));const e=byId[id];if(!e)return;view='courses';courseOpen=e.course;render();const r=document.getElementById('ep-'+id);if(r){r.scrollIntoView({block:'center'});r.querySelector('.pl').focus()}}
+let deferredPrompt=null; addEventListener('beforeinstallprompt',ev=>{ev.preventDefault();deferredPrompt=ev;if(view==='home')render()});
+function goHash(){const id=decodeURIComponent(location.hash.slice(1));const e=byId[id];if(!e)return;view='courses';courseOpen=e.course;render();const r=document.getElementById('ep-'+id);if(r){r.scrollIntoView({block:'center'});r.querySelector('.tx').focus()}}
 addEventListener('hashchange',goHash);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 loadSaved().then(()=>{render();goHash();const last=byId[S.get('last')];if(last&&!cur){cur=last;document.body.classList.add('has-cur');srcFor(last).then(s=>{audio.src=s;audio.addEventListener('loadedmetadata',()=>{const p=pos[last.id];if(p)audio.currentTime=p},{once:true})});setupSession(last);paintPlayer()}});
