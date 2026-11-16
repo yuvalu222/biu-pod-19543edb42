@@ -41,22 +41,6 @@
    <itunes:duration>540</itunes:duration>
   </item>
   <item>
-   <title>מבוא לפסיכולוגיה פיזיולוגית א&#x27; | : שיעור 4: הכרת תאי מערכת העצבים: תקשורת בין נוירונים – חלק 1 מתוך 4</title>
-   <description>מבוא לפסיכולוגיה פיזיולוגית א&#x27; · שיעור 4: הכרת תאי מערכת העצבים: תקשורת בין נוירונים – חלק 1 מתוך 4 · תאריך: 2026-11-10</description>
-   <guid isPermaLink="false">lesson-876010301-4-p1-1794455082</guid>
-   <pubDate>Thu, 12 Nov 2026 09:03:00 +0200</pubDate>
-   <enclosure url="https://yuvalu222.github.io/biu-pod-19543edb42/audio/lesson-876010301-4-p1.m4a?v=1794455082" length="4290272" type="audio/mp4"/>
-   <itunes:duration>660</itunes:duration>
-  </item>
-  <item>
-   <title>מבוא לפסיכולוגיה פיזיולוגית א&#x27; | : שיעור 4: הכרת תאי מערכת העצבים: תקשורת בין נוירונים – חלק 4 מתוך 4</title>
-   <description>מבוא לפסיכולוגיה פיזיולוגית א&#x27; · שיעור 4: הכרת תאי מערכת העצבים: תקשורת בין נוירונים – חלק 4 מתוך 4 · תאריך: 2026-11-10</description>
-   <guid isPermaLink="false">lesson-876010301-4-p4-1794456341</guid>
-   <pubDate>Thu, 12 Nov 2026 09:04:00 +0200</pubDate>
-   <enclosure url="https://yuvalu222.github.io/biu-pod-19543edb42/audio/lesson-876010301-4-p4.m4a?v=1794456341" length="3692741" type="audio/mp4"/>
-   <itunes:duration>540</itunes:duration>
-  </item>
-  <item>
    <title>מבוא לפסיכולוגיה פיזיולוגית א&#x27; | : שיעור 2: הכרת תאי מערכת העצבים: תקשורת בתוך הנוירון – חלק 4 מתוך 4</title>
    <description>מבוא לפסיכולוגיה פיזיולוגית א&#x27; · שיעור 2: הכרת תאי מערכת העצבים: תקשורת בתוך הנוירון – חלק 4 מתוך 4 · תאריך: 2026-10-20</description>
    <guid isPermaLink="false">lesson-876010301-2-p4-1794517110</guid>
@@ -79,6 +63,30 @@
    <pubDate>Fri, 13 Nov 2026 09:10:00 +0200</pubDate>
    <enclosure url="https://yuvalu222.github.io/biu-pod-19543edb42/audio/book-873178601-fish-p13-20.m4a?v=1794581834" length="5690648" type="audio/mp4"/>
    <itunes:duration>900</itunes:duration>
+  </item>
+  <item>
+   <title>מבוא לפסיכולוגיה פיזיולוגית א&#x27; | שיעור: שיעור 4: הולכת פוטנציאל פעולה והכפתור הטרמינלי – חלק 1 מתוך 2</title>
+   <description>מבוא לפסיכולוגיה פיזיולוגית א&#x27; · שיעור · שיעור 4: הולכת פוטנציאל פעולה והכפתור הטרמינלי – חלק 1 מתוך 2 · תאריך: 2026-11-10</description>
+   <guid isPermaLink="false">u-876010301-4-p1-1794850323</guid>
+   <pubDate>Mon, 16 Nov 2026 09:11:00 +0200</pubDate>
+   <enclosure url="https://yuvalu222.github.io/biu-pod-19543edb42/audio/u-876010301-4-p1.m4a?v=1794850323" length="3167495" type="audio/mp4"/>
+   <itunes:duration>480</itunes:duration>
+  </item>
+  <item>
+   <title>מבוא לפסיכולוגיה פיזיולוגית א&#x27; | שיעור: שיעור 4: תקשורת בין נוירונים ואינטגרציה עצבית – חלק 2 מתוך 2</title>
+   <description>מבוא לפסיכולוגיה פיזיולוגית א&#x27; · שיעור · שיעור 4: תקשורת בין נוירונים ואינטגרציה עצבית – חלק 2 מתוך 2 · תאריך: 2026-11-10</description>
+   <guid isPermaLink="false">u-876010301-4-p2-1794850456</guid>
+   <pubDate>Mon, 16 Nov 2026 09:12:00 +0200</pubDate>
+   <enclosure url="https://yuvalu222.github.io/biu-pod-19543edb42/audio/u-876010301-4-p2.m4a?v=1794850456" length="4765725" type="audio/mp4"/>
+   <itunes:duration>720</itunes:duration>
+  </item>
+  <item>
+   <title>מבוא לפסיכולוגיה (הרצאה + תרגול) | שיעור: תרגול 2: שיטות מחקר</title>
+   <description>מבוא לפסיכולוגיה (הרצאה + תרגול) · שיעור · תרגול 2: שיטות מחקר · תאריך: 2026-10-29</description>
+   <guid isPermaLink="false">u-876010101-t2-1794850494</guid>
+   <pubDate>Mon, 16 Nov 2026 09:13:00 +0200</pubDate>
+   <enclosure url="https://yuvalu222.github.io/biu-pod-19543edb42/audio/u-876010101-t2.m4a?v=1794850494" length="4454045" type="audio/mp4"/>
+   <itunes:duration>660</itunes:duration>
   </item>
  </channel>
 </rss>
