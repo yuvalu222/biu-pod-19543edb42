@@ -236,6 +236,19 @@ body:not(.playing) .full .art .cover{transform:scale(.92)}
 .viewer button{min-width:44px;min-height:44px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;font-weight:600}
 .viewer button svg{width:20px;height:20px}
 .viewer .vl{font-weight:600;font-size:.92rem;text-align:center;flex:1}
+.st-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 2px;scrollbar-width:none}
+.st-tabs::-webkit-scrollbar{display:none}
+.st-tabs button{flex:none;min-height:38px;padding:0 14px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow);font-weight:600;font-size:.88rem}
+.st-tabs button[aria-pressed=true]{background:var(--fg);color:#fff}
+.ex-row{display:flex;gap:12px;align-items:center}
+.ex-d{flex:none;width:58px;text-align:center;border-radius:12px;background:var(--surface-2);padding:6px 0;line-height:1.15}
+.ex-d b{display:block;font-size:1.05rem} .ex-d span{font-size:.72rem;color:var(--muted)}
+.ex-d.soon{background:var(--warn-2);color:var(--warn)} .ex-d.soon span{color:var(--warn)}
+.cbar{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden;margin:6px 0 2px}
+.cbar i{display:block;height:100%;background:var(--good);border-radius:5px}
+.rs-big{font-size:1.6rem;font-weight:700}
+.tag2{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);margin-inline-start:6px}
+.tag2.open{background:var(--good-2);color:var(--good)} .tag2.web{background:var(--accent-2);color:var(--accent)}
 .st-head{background:var(--surface);border-radius:18px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .st-head .row{display:flex;align-items:center;gap:10px;font-weight:600}
 .st-head .pulse{width:12px;height:12px;border-radius:50%;background:var(--faint);flex:none}
@@ -298,7 +311,7 @@ nav.tabs .badge.live{background:#1FA855;min-width:10px;height:10px;padding:0;top
   <button type="button" data-v="home" aria-current="page"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5v-6h-6v6H4z"/></svg></span>בית</button>
   <button type="button" data-v="courses"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14z"/></svg></span>קורסים</button>
   <button type="button" data-v="downloads"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14"/></svg></span>הורדות<span class="badge" id="dlBadge" hidden></span></button>
-  <button type="button" data-v="status"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 7 4-14 3 7h4"/></svg></span>מה קורה<span class="badge live" id="liveBadge" hidden></span></button>
+  <button type="button" data-v="status"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 7 4-14 3 7h4"/></svg></span>לימודים<span class="badge live" id="liveBadge" hidden></span></button>
 </div></nav>
 
 <div class="full" id="full" role="dialog" aria-modal="true" aria-label="נגן מלא">
@@ -564,8 +577,42 @@ async function loadStatus(){try{const r=await fetch('status.json?t='+Date.now(),
   const lb=$('#liveBadge'); if(lb)lb.hidden=!(ST&&ST.active); return ST}
 function ago(iso){if(!iso)return'';const m=Math.round((Date.now()-new Date(iso))/60000);return m<1?'עכשיו':m<60?`לפני ${m} דק'`:m<1440?`לפני ${Math.round(m/60)} שע'`:`לפני ${Math.round(m/1440)} ימים`}
 function logTime(t){const m=/^(\d\d)-(\d\d) (\d\d:\d\d)$/.exec(t||'');return m?`${+m[2]}.${+m[1]} ${m[3]}`:t}
+let stSec=null; try{stSec=localStorage.getItem('stSec')}catch(e){}
+function secExams(main){const ex=ST.exams||[];if(!ex.length)return;
+  const a=ex.filter(x=>x.days==null||x.days<120), b=ex.filter(x=>x.days!=null&&x.days>=120);
+  const row=x=>el('div',{class:'st-item'},el('div',{class:'ex-row'},el('div',{class:'ex-d'+(x.days!=null&&x.days<=14?' soon':'')},el('b',{},x.days==null?'?':x.days===0?'היום':x.days),el('span',{},x.days==null?'אין תאריך':x.days===0?'':'ימים')),
+    el('div',{},el('b',{},x.course),el('div',{class:'sub'},[x.wd?`יום ${x.wd}'`:null,x.date,x.time].filter(Boolean).join(' · ')||'עוד לא פורסם תאריך'),el('div',{class:'sub'},x.title))));
+  main.append(el('h2',{},'מבחנים ובחנים'),el('div',{class:'st-list'},a.map(row)));
+  if(b.length)main.append(el('details',{class:'st-list',style:'padding:10px 16px'},el('summary',{style:'font-weight:600;cursor:pointer'},`סמסטר ב' (${b.length} מבחנים)`),...b.map(row)));
+}
+function secTasks(main){const t=ST.tasks||[];if(!t.length)return;
+  main.append(el('h2',{},'מטלות ומועדים'),el('div',{class:'st-list'},t.map(x=>el('div',{class:'st-item'},el('b',{},x.title),
+    el('span',{class:'sub'},[x.course,x.due?(x.due+(x.time?' '+x.time:'')):'בלי תאריך',x.days!=null&&x.days>=0?(x.days===0?'היום':x.days===1?'מחר':'בעוד '+x.days+' ימים'):null].filter(Boolean).join(' · ')),
+    x.state?el('span',{class:'why'},x.state):null))));
+}
+function secResearch(main){const r=ST.research;if(!r)return;
+  const reg=(r.registered||[]).reduce((a,x)=>a+(x.credits||0),0), have=(r.earned||0)+(r.pending||0), cap=r.cap_semester||12;
+  main.append(el('h2',{},'השתתפות במחקר (קופונים)'),el('div',{class:'st-head'},
+    el('div',{class:'row'},el('span',{class:'rs-big'},`${have} / ${cap}`),el('span',{class:'sub'},'קופונים בסמסטר א' + "'")),
+    el('div',{class:'cbar'},el('i',{style:`width:${Math.min(100,(have+reg)/cap*100)}%;opacity:${have?1:.45}`})),
+    el('small',{},`נצברו ${r.earned||0}, ממתינים לחוקר ${r.pending||0}, רשום ועוד לא עשית ${reg}. ${r.cap_note||''}. לשנה כולה: ${r.required_year||30}.`),
+    el('small',{},`נבדק ${r.checked||''}`)));
+  if((r.registered||[]).length)main.append(el('h2',{},'רשום, מחכה שתעשה'),el('div',{class:'st-list'},r.registered.map(x=>el('div',{class:'st-item'},
+    el('b',{},x.name,el('span',{class:'tag2 web'},x.web?'מקוון':'במעבדה')),el('span',{class:'sub'},`${x.credits} קופון · כ-${x.minutes} דק' · עד ${x.until}`),x.how?el('span',{class:'sub'},x.how):null))));
+  if((r.best||[]).length)main.append(el('h2',{},'הכי משתלמים (קופונים מול זמן)'),r.rate_note?el('p',{class:'sub',style:'margin:-4px 0 8px;color:var(--muted);font-size:.84rem'},r.rate_note):null,
+    el('div',{class:'st-list'},r.best.map(x=>el('div',{class:'st-item'},el('b',{},x.name,x.open?el('span',{class:'tag2 open'},'יש מועדים פנויים'):null),
+      el('span',{class:'sub'},`${x.credits} קופונים · ${x.minutes} דק' · ${x.per_hour} לשעה · ${x.web?'מקוון':'במעבדה'}`),x.req?el('span',{class:'sub'},x.req):null))),
+    r.plan_to_12?el('p',{class:'empty',style:'font-size:.86rem'},r.plan_to_12):null);
+}
+function secPods(main,item){
+  const work=ST.lessons.filter(l=>l.stage!=='player'), ready=ST.lessons.filter(l=>l.stage==='player');
+  const act=work.filter(l=>l.stage!=='ready'), todo=work.filter(l=>l.stage==='ready');
+  if(act.length)main.append(el('h2',{},'פודקאסטים בעבודה'),el('div',{class:'st-list'},act.map(item)));
+  if(todo.length)main.append(el('h2',{},'פודקאסטים הבאים בתור'),el('div',{class:'st-list'},todo.map(item)));
+  if(ready.length)main.append(el('h2',{},'כבר בנגן'),el('div',{class:'st-list'},ready.map(item)));
+}
 function renderStatus(main){
-  main.append(el('h2',{},'מה קורה במערכת'));
+  main.append(el('h2',{},'הלימודים שלי'));
   if(!ST){main.append(el('p',{class:'empty'},navigator.onLine?'טוען...':'אין אינטרנט, אי אפשר לראות את המצב.'));loadStatus().then(()=>{if(view==='status'&&ST)render()});return}
   const c=ST.counts||{}, inWork=(c.gen||0)+(c.dl||0)+(c.tr||0)+(c.ok||0);
   main.append(el('div',{class:'st-head'},
@@ -574,19 +621,20 @@ function renderStatus(main){
     el('small',{},`עודכן ${ST.updated} (${ago(ST.updated_iso)})`),
     el('div',{class:'chips'},el('span',{class:'chip g'},`בנגן: ${c.player||0}`),inWork?el('span',{class:'chip b'},`בדרך: ${inWork}`):null,
       c.fail?el('span',{class:'chip w'},`יופקו מחדש: ${c.fail}`):null,el('span',{class:'chip'},`עוד לא התחילו: ${c.ready||0}`))));
-  if((ST.soon||[]).length){main.append(el('h2',{},'מועדים קרובים'),el('div',{class:'st-list'},ST.soon.map(x=>el('div',{class:'st-item'},
-    el('b',{},x.title),el('span',{class:'sub'},`${x.course} · ${x.date} · ${x.days===0?'היום':x.days===1?'מחר':'בעוד '+x.days+' ימים'}`)))))}
   const item=l=>el('div',{class:'st-item'},el('b',{},l.title),el('span',{class:'sub'},[l.course,l.span].filter(Boolean).join(' · ')),
     el('span',{class:'stg '+l.stage},el('i'),l.label+(l.pieces&&l.pieces.length>1&&l.stage!=='player'?` · ${l.progress} חלקים מוכנים`:'')),
     l.why?el('span',{class:'why'},l.why):null,
     l.pieces&&l.pieces.length>1&&l.stage!=='player'?el('details',{},el('summary',{},'איך זה מתקדם (הפרק נבנה בחלקים כדי שלא יחסר כלום, ומתחבר לפרק אחד)'),
       el('ul',{},l.pieces.map(p=>el('li',{},`${p.span||p.id}: ${p.label}`+(p.when?` (נשלח ${logTime(p.when)})`:''),p.why?el('div',{class:'why'},p.why):null)))):null);
-  const work=ST.lessons.filter(l=>l.stage!=='player'), ready=ST.lessons.filter(l=>l.stage==='player');
-  const act=work.filter(l=>l.stage!=='ready'), todo=work.filter(l=>l.stage==='ready');
-  if(act.length)main.append(el('h2',{},'בעבודה עכשיו'),el('div',{class:'st-list'},act.map(item)));
-  if((ST.log||[]).length)main.append(el('h2',{},'יומן: מה קרה ומתי'),el('div',{class:'st-log'},ST.log.slice(0,30).map(x=>el('div',{},el('time',{},logTime(x.t)),el('span',{class:'k-'+x.kind},x.text)))));
-  if(todo.length)main.append(el('h2',{},'הבא בתור'),el('div',{class:'st-list'},todo.map(item)));
-  if(ready.length)main.append(el('h2',{},'כבר בנגן'),el('div',{class:'st-list'},ready.map(item)));
+  const SECS=[['all','הכל'],['exams','מבחנים'],['tasks','מטלות'],['research','ניסויים'],['pods','פודקאסטים'],['log','יומן']];
+  const cur=SECS.some(x=>x[0]===stSec)?stSec:'all';
+  main.append(el('div',{class:'st-tabs',role:'group','aria-label':'מה להציג'},SECS.map(([k,t])=>el('button',{type:'button','aria-pressed':String(k===cur),onclick:()=>{stSec=k;try{localStorage.setItem('stSec',k)}catch(e){}render()}},t))));
+  const logSec=()=>{if((ST.log||[]).length)main.append(el('h2',{},'יומן: מה קרה ומתי'),el('div',{class:'st-log'},ST.log.slice(0,cur==='log'?80:12).map(x=>el('div',{},el('time',{},logTime(x.t)),el('span',{class:'k-'+x.kind},x.text)))))};
+  if(cur==='all'||cur==='exams')secExams(main);
+  if(cur==='all'||cur==='tasks')secTasks(main);
+  if(cur==='all'||cur==='research')secResearch(main);
+  if(cur==='all'||cur==='pods')secPods(main,item);
+  if(cur==='all'||cur==='log')logSec();
   if(ST.rules)main.append(el('p',{class:'empty',style:'font-size:.82rem'},ST.rules));
 }
 let tt; function toast(m){clearTimeout(tt);let t=$('#toast');if(!t){t=el('div',{id:'toast',role:'status'});document.body.append(t)}t.textContent=m;t.hidden=false;tt=setTimeout(()=>t.hidden=true,3200)}
