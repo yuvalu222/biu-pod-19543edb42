@@ -634,6 +634,7 @@ function openViewer(i,full){
   pane.addEventListener('touchcancel',()=>{g=null});
   pane.addEventListener('dblclick',ev=>{if(Date.now()-lastTouch<900)return;const p=ptr(ev.clientX,ev.clientY);zoomTo(st.s>1?1:2.5,p[0],p[1])});
   v.addEventListener('mousemove',()=>{if(Date.now()-lastTouch>900)poke()});
+  v.addEventListener('gesturestart',ev=>ev.preventDefault()); // ספארי: שהצביטה תגדיל את השקופית ולא את כל הדף
   const onResize=()=>{layout();setTimeout(layout,300)};
   const onFs=()=>{if(!fsEl()&&st.api){st.api=false;if(st.full){st.full=false;try{screen.orientation.unlock()}catch(x){}}layout()}};
   const onKey=ev=>{if(ev.key==='ArrowLeft')go(1);else if(ev.key==='ArrowRight')go(-1);else if(ev.key==='f')setVFull(!st.full)};
