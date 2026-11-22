@@ -300,6 +300,9 @@ nav.tabs .badge.live{background:#1FA855;min-width:10px;height:10px;padding:0;top
 .sheet .alt{min-height:46px;border-radius:14px;background:var(--surface-2);font-weight:600}
 .sheet .cancel{min-height:44px;color:var(--muted);font-weight:500}
 @keyframes fade{from{opacity:0}to{opacity:1}}
+#osd{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:70;background:rgba(20,20,26,.78);color:#fff;font-weight:700;font-size:1.05rem;padding:12px 20px;border-radius:999px;pointer-events:none;opacity:0;direction:rtl;white-space:nowrap}
+#osd.on{opacity:1}
+#osd.off{opacity:0;transition:opacity .35s}
 #toast{position:fixed;inset-inline:16px;bottom:calc(158px + env(safe-area-inset-bottom));background:var(--fg);color:#fff;padding:12px 16px;border-radius:14px;z-index:30;font-weight:500;text-align:center;box-shadow:var(--shadow-lg);max-width:560px;margin-inline:auto}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -637,7 +640,8 @@ function openViewer(i,full){
   v.addEventListener('gesturestart',ev=>ev.preventDefault()); // ספארי: שהצביטה תגדיל את השקופית ולא את כל הדף
   const onResize=()=>{layout();setTimeout(layout,300)};
   const onFs=()=>{if(!fsEl()&&st.api){st.api=false;if(st.full){st.full=false;try{screen.orientation.unlock()}catch(x){}}layout()}};
-  const onKey=ev=>{if(ev.key==='ArrowLeft')go(1);else if(ev.key==='ArrowRight')go(-1);else if(ev.key==='f')setVFull(!st.full)};
+  const onKey=()=>{}; // המקלדת מטופלת בקוד הגלובלי (כמו יוטיוב); דפדוף בשקופיות: PageUp/PageDown
+  st.setFull=setVFull; st.go=go;
   window.addEventListener('resize',onResize);window.addEventListener('orientationchange',onResize);
   document.addEventListener('fullscreenchange',onFs);document.addEventListener('webkitfullscreenchange',onFs);document.addEventListener('keydown',onKey);
   st.off=()=>{window.removeEventListener('resize',onResize);window.removeEventListener('orientationchange',onResize);
@@ -742,11 +746,47 @@ $('#b15').onclick=()=>audio.currentTime=Math.max(0,audio.currentTime-15); $('#f3
 $('#fullShare').innerHTML=I.wa+'<span>שליחה לחבר בווטסאפ</span>'; $('#fullShare').onclick=()=>cur&&cur.share&&openShare(cur);
 $('#fullDl').onclick=()=>cur&&(saved.has(cur.id)?removeDl(cur):download(cur));
 const RATES=[1,1.25,1.5,1.75,2,0.8]; $('#speed').textContent=S.get('rate',1)+'x';
-$('#speed').onclick=()=>{const r=RATES[(RATES.indexOf(S.get('rate',1))+1)%RATES.length];S.set('rate',r);audio.playbackRate=r;$('#speed').textContent=r+'x'};
+$('#speed').onclick=()=>{const i=RATES.indexOf(S.get('rate',1)),r=RATES[(i<0?0:i+1)%RATES.length];S.set('rate',r);audio.playbackRate=r;$('#speed').textContent=r+'x'};
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{view=b.dataset.v;courseOpen=null;$('#q').value='';if(view==='status')loadStatus().then(()=>{if(view==='status')render()});render();scrollTo(0,0)});
 loadStatus(); clearInterval(stTimer); stTimer=setInterval(()=>{if(document.hidden)return;loadStatus().then(()=>{if(view==='status'&&!$('#q').value)render()})},45000);
 $('#q').addEventListener('input',render); $('#clr').onclick=()=>{$('#q').value='';render();$('#q').focus()};
-document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){if($('#viewer'))closeViewer();else if($('#sheet'))closeShare();else setFull(false)}});
+// מקלדת כמו ביוטיוב (יובל 22.11: "חייב להתנהג כמו יוטיוב במחשב"). רווח/K ניגון-השהיה, חצים ו-J/L 10 שניות, למעלה/למטה עוצמה,
+// M השתקה, 0-9 קפיצה לאחוז, Home/End התחלה/סוף, Shift+N/P פרק הבא/קודם, Shift+>/< מהירות, F מסך מלא, Esc יציאה.
+audio.volume=S.get('vol',1); audio.muted=S.get('muted',false);
+const SPEEDS=[0.25,0.5,0.75,0.8,1,1.25,1.5,1.75,2];
+function setRate(r){S.set('rate',r);audio.playbackRate=r;$('#speed').textContent=r+'x'}
+function playPrev(){if(!cur)return;const l=sortEps(EP.filter(e=>e.course===cur.course));const i=l.findIndex(e=>e.id===cur.id);if(i>0)playEp(l[i-1]);else audio.currentTime=0}
+let osdT; function osd(txt){let o=$('#osd');if(!o){o=el('div',{id:'osd','aria-live':'polite'});document.body.append(o)}o.textContent=txt;o.classList.remove('off');void o.offsetWidth;o.classList.add('on');clearTimeout(osdT);osdT=setTimeout(()=>{o.classList.remove('on');o.classList.add('off')},650)}
+function seekBy(s){if(!cur)return;const d=audio.duration||0;audio.currentTime=Math.max(0,Math.min(d?d-0.2:1e9,audio.currentTime+s));osd(Math.abs(s)+' שניות '+(s>0?'קדימה':'אחורה'));if(VW){VW.follow=true;syncViewer(true)}}
+function seekTo(f){if(!cur||!audio.duration)return;audio.currentTime=audio.duration*f;osd(Math.round(f*100)+'%');if(VW){VW.follow=true;syncViewer(true)}}
+function volBy(v){audio.muted=false;audio.volume=Math.max(0,Math.min(1,Math.round((audio.volume+v)*20)/20));S.set('vol',audio.volume);S.set('muted',false);osd('עוצמה '+Math.round(audio.volume*100)+'%')}
+let spaceHandled=false;
+document.addEventListener('keydown',ev=>{
+  if(ev.key==='Escape'){if($('#viewer'))closeViewer();else if($('#sheet'))closeShare();else setFull(false);return}
+  const t=ev.target, typing=t&&(t.isContentEditable||t.tagName==='TEXTAREA'||(t.tagName==='INPUT'&&t.type!=='range'));
+  if(typing||ev.ctrlKey||ev.metaKey||ev.altKey||!cur)return;
+  const k=ev.key, kl=k.length===1?k.toLowerCase():k, panel=document.body.classList.contains('full-open')||!!$('#viewer');
+  let done=true;
+  if(k===' '||kl==='k'||kl==='ל'){if(audio.paused){audio.play().catch(showErr);osd('ניגון')}else{audio.pause();osd('השהיה')}spaceHandled=k===' '}
+  else if(k==='ArrowLeft'||kl==='j'||kl==='ח')seekBy(-10);
+  else if(k==='ArrowRight'||kl==='l'||kl==='ך')seekBy(10);
+  else if(k==='ArrowUp'&&panel)volBy(0.05);
+  else if(k==='ArrowDown'&&panel)volBy(-0.05);
+  else if(kl==='m'||kl==='צ'){audio.muted=!audio.muted;S.set('muted',audio.muted);osd(audio.muted?'מושתק':'עוצמה '+Math.round(audio.volume*100)+'%')}
+  else if(/^[0-9]$/.test(k)&&!ev.shiftKey)seekTo(+k/10);
+  else if(k==='Home'&&panel)seekTo(0);
+  else if(k==='End'&&panel){if(audio.duration)audio.currentTime=audio.duration-0.5}
+  else if(ev.shiftKey&&(kl==='n'||kl==='מ')){playNext();osd('הפרק הבא')}
+  else if(ev.shiftKey&&(kl==='p'||kl==='פ')){playPrev();osd('הפרק הקודם')}
+  else if(k==='>'||k==='<'||(ev.shiftKey&&(ev.code==='Period'||ev.code==='Comma'))){const up=k==='>'||ev.code==='Period',r=audio.playbackRate||1;
+    const n=up?SPEEDS.find(x=>x>r+0.001):[...SPEEDS].reverse().find(x=>x<r-0.001);if(n){setRate(n);osd('מהירות '+n+'x')}}
+  else if(kl==='f'||kl==='כ'){if(VW&&VW.setFull)VW.setFull(!VW.full);else if(cur.slides&&cur.slides.length){setFull(true);openViewer(slideAt(cur,audio.currentTime||0),true)}else setFull(!document.body.classList.contains('full-open'))}
+  else if((k==='PageDown'||k==='PageUp')&&VW&&VW.go)VW.go(k==='PageDown'?1:-1);
+  else done=false;
+  if(done)ev.preventDefault();
+});
+// רווח על כפתור ממוקד לא ילחץ עליו בנוסף (אחרת יוצא ניגון והשהיה ביחד)
+document.addEventListener('keyup',ev=>{if(ev.key===' '&&spaceHandled){ev.preventDefault();spaceHandled=false}});
 let ty=null; $('#full').addEventListener('touchstart',ev=>{ty=ev.touches[0].clientY},{passive:true}); $('#full').addEventListener('touchend',ev=>{if(ty!=null&&ev.changedTouches[0].clientY-ty>110&&!ev.target.closest('.seek'))setFull(false);ty=null});
 const setOnline=()=>document.body.classList.toggle('offline',!navigator.onLine); addEventListener('online',setOnline); addEventListener('offline',setOnline); setOnline();
 let deferredPrompt=null; addEventListener('beforeinstallprompt',ev=>{ev.preventDefault();deferredPrompt=ev;if(view==='home')render()});
