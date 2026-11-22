@@ -565,7 +565,7 @@ function paintSlide(force){
   const [t,src,lab]=cur.slides[i], nx=cur.slides[i+1];
   const img=el('img',{src,alt:lab,decoding:'async'});
   $('#fullCv').replaceChildren(el('div',{class:'slide'},
-    el('div',{class:'im'},el('button',{type:'button',class:'imb','aria-label':'הגדלת השקופית: '+lab,onclick:()=>openViewer(i)},img),
+    el('div',{class:'im'},el('button',{type:'button',class:'imb','aria-label':'הגדלת השקופית: '+lab,onclick:ev=>{if(ev.pointerType!=='mouse')openViewer(i)}},img),
       el('button',{type:'button',class:'zm','aria-label':'מסך מלא לרוחב',html:I.zoom,onclick:()=>openViewer(i,true)})),
     el('div',{class:'lb'},el('span',{},lab),el('span',{},`${i+1} / ${cur.slides.length}`))));
   if(nx){const p=new Image();p.src=nx[1]}
@@ -635,7 +635,13 @@ function openViewer(i,full){
     if(now-lastTap<330){clearTimeout(tapT);lastTap=0;const p=ptr(c.clientX,c.clientY);zoomTo(st.s>1?1:2.5,p[0],p[1]);poke()}
     else{lastTap=now;tapT=setTimeout(()=>{if(!v.classList.contains('land'))return;if(v.classList.contains('hide'))poke();else{clearTimeout(st.hideT);v.classList.add('hide')}},340)}});
   pane.addEventListener('touchcancel',()=>{g=null});
-  pane.addEventListener('dblclick',ev=>{if(Date.now()-lastTouch<900)return;const p=ptr(ev.clientX,ev.clientY);zoomTo(st.s>1?1:2.5,p[0],p[1])});
+  // עכבר כמו ביוטיוב: קליק = ניגון/השהיה, קליק כפול = מסך מלא, גלגלת = זום (22.11)
+  pane.addEventListener('click',ev=>{if(ev.pointerType==='mouse'&&st.s===1)togglePlay()});
+  pane.addEventListener('dblclick',ev=>{if(Date.now()-lastTouch<900)return;if(st.s===1)setVFull(!st.full)});
+  pane.addEventListener('wheel',ev=>{ev.preventDefault();const p=ptr(ev.clientX,ev.clientY);zoomTo(Math.max(1,Math.min(4,st.s*(ev.deltaY<0?1.15:1/1.15))),p[0],p[1])},{passive:false});
+  let drag=null; pane.addEventListener('mousedown',ev=>{if(st.s>1){drag={x:ev.clientX,y:ev.clientY,x0:st.x,y0:st.y};ev.preventDefault()}});
+  const onMM=ev=>{if(!drag)return;const [dx,dy]=toPane(ev.clientX-drag.x,ev.clientY-drag.y);st.x=drag.x0+dx;st.y=drag.y0+dy;clamp();apply()}, onMU=()=>{drag=null};
+  window.addEventListener('mousemove',onMM);window.addEventListener('mouseup',onMU);
   v.addEventListener('mousemove',()=>{if(Date.now()-lastTouch>900)poke()});
   v.addEventListener('gesturestart',ev=>ev.preventDefault()); // ספארי: שהצביטה תגדיל את השקופית ולא את כל הדף
   const onResize=()=>{layout();setTimeout(layout,300)};
@@ -645,7 +651,7 @@ function openViewer(i,full){
   window.addEventListener('resize',onResize);window.addEventListener('orientationchange',onResize);
   document.addEventListener('fullscreenchange',onFs);document.addEventListener('webkitfullscreenchange',onFs);document.addEventListener('keydown',onKey);
   st.off=()=>{window.removeEventListener('resize',onResize);window.removeEventListener('orientationchange',onResize);
-    document.removeEventListener('fullscreenchange',onFs);document.removeEventListener('webkitfullscreenchange',onFs);document.removeEventListener('keydown',onKey)};
+    document.removeEventListener('fullscreenchange',onFs);document.removeEventListener('webkitfullscreenchange',onFs);document.removeEventListener('keydown',onKey);window.removeEventListener('mousemove',onMM);window.removeEventListener('mouseup',onMU)};
   document.body.append(v); st.show(); layout();
   if(full)setVFull(true);
 }
@@ -760,6 +766,10 @@ let osdT; function osd(txt){let o=$('#osd');if(!o){o=el('div',{id:'osd','aria-li
 function seekBy(s){if(!cur)return;const d=audio.duration||0;audio.currentTime=Math.max(0,Math.min(d?d-0.2:1e9,audio.currentTime+s));osd(Math.abs(s)+' שניות '+(s>0?'קדימה':'אחורה'));if(VW){VW.follow=true;syncViewer(true)}}
 function seekTo(f){if(!cur||!audio.duration)return;audio.currentTime=audio.duration*f;osd(Math.round(f*100)+'%');if(VW){VW.follow=true;syncViewer(true)}}
 function volBy(v){audio.muted=false;audio.volume=Math.max(0,Math.min(1,Math.round((audio.volume+v)*20)/20));S.set('vol',audio.volume);S.set('muted',false);osd('עוצמה '+Math.round(audio.volume*100)+'%')}
+function togglePlay(){if(!cur)return;if(audio.paused){audio.play().catch(showErr);osd('ניגון')}else{audio.pause();osd('השהיה')}}
+// קליק עכבר על השקופית/העטיפה בנגן = ניגון/השהיה; קליק כפול = מסך מלא (כמו ביוטיוב). במגע: הקשה פותחת את השקופית כמו קודם.
+$('#fullCv').addEventListener('click',ev=>{if(ev.pointerType==='mouse'&&!ev.target.closest('.zm'))togglePlay()});
+$('#fullCv').addEventListener('dblclick',ev=>{if(ev.target.closest('.zm')||!cur)return;if(cur.slides&&cur.slides.length)openViewer(slideAt(cur,audio.currentTime||0),true)});
 let spaceHandled=false;
 document.addEventListener('keydown',ev=>{
   if(ev.key==='Escape'){if($('#viewer'))closeViewer();else if($('#sheet'))closeShare();else setFull(false);return}
@@ -767,7 +777,7 @@ document.addEventListener('keydown',ev=>{
   if(typing||ev.ctrlKey||ev.metaKey||ev.altKey||!cur)return;
   const k=ev.key, kl=k.length===1?k.toLowerCase():k, panel=document.body.classList.contains('full-open')||!!$('#viewer');
   let done=true;
-  if(k===' '||kl==='k'||kl==='ל'){if(audio.paused){audio.play().catch(showErr);osd('ניגון')}else{audio.pause();osd('השהיה')}spaceHandled=k===' '}
+  if(k===' '||kl==='k'||kl==='ל'){togglePlay();spaceHandled=k===' '}
   else if(k==='ArrowLeft'||kl==='j'||kl==='ח')seekBy(-10);
   else if(k==='ArrowRight'||kl==='l'||kl==='ך')seekBy(10);
   else if(k==='ArrowUp'&&panel)volBy(0.05);
